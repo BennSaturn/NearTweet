@@ -22,7 +22,9 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Could not listen on port: 4444");
         }
- 
+        
+        
+        System.out.println("hello!");
         System.out.println("Server started. Listening to the port 4444");
  
         while (true) {
