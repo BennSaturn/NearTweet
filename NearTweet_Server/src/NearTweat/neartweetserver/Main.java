@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -14,12 +15,14 @@ public class Main {
  
     private static ServerSocket serverSocket;
     private static Socket clientSocket;
+    private static Socket sendTweet;
     private static InputStreamReader inputStreamReader;
     private static OutputStreamWriter outputStreamWriter;
     private static BufferedReader bufferedReader;
     private static String message;
     private static String[] operation;
     private static String userName;
+    private static String tweet;
     private static Map<String, String> listClients = new HashMap<String, String>();
     
     public static void main(String[] args) {
@@ -59,6 +62,19 @@ public class Main {
             		outputStreamWriter.close();
             		break;
             	case "TWEET" :
+            		tweet = (String) message.subSequence(7, message.length());
+            		System.out.println(tweet);
+            		// ver todos os portos/clientes existentes
+            		
+            		for (String s :listClients.values()){
+            			String[] portClient = s.split("/");
+               			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
+               			sendTweet.connect(endpoint);
+               			outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
+               			outputStreamWriter.write(tweet);
+               			outputStreamWriter.flush();
+               			outputStreamWriter.close();
+            		}
             		break;
             	case "REPLY" :
             		break;
@@ -82,3 +98,4 @@ public class Main {
         }
     }
 }
+
