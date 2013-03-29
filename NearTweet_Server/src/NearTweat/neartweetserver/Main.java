@@ -77,6 +77,31 @@ public class Main {
             		}
             		break;
             	case "REPLY" :
+            		tweet = (String) message.subSequence(7, message.length());
+            		
+            		String[] person = tweet.split(":");
+            		
+            		if(listClients.get(person[0]) != null){
+            			String[] portReply = listClients.get(person[0]).split("/");
+            			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portReply[2]));
+               			sendTweet.connect(endpoint);
+               			outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
+               			outputStreamWriter.write(person[1]);
+               			outputStreamWriter.flush();
+               			outputStreamWriter.close();
+            		} else {
+                		for (String s :listClients.values()){
+                			String[] portClient = s.split("/");
+                   			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
+                   			sendTweet.connect(endpoint);
+                   			outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
+                   			outputStreamWriter.write(person[1]);
+                   			outputStreamWriter.flush();
+                   			outputStreamWriter.close();
+                		}
+            		}
+            		System.out.println(tweet);
+            		// ver todos os portos/clientes existentes
             		break;
             	case "RETWEET" :
             		break;
