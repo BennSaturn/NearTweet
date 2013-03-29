@@ -3,6 +3,8 @@ package NearTweat.neartweetserver;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -13,9 +15,10 @@ public class Main {
     private static ServerSocket serverSocket;
     private static Socket clientSocket;
     private static InputStreamReader inputStreamReader;
+    private static OutputStreamWriter outputStreamWriter;
     private static BufferedReader bufferedReader;
     private static String message;
-    private static String operation;
+    private static String[] operation;
     private static String userName;
     private static Map<String, String> listClients = new HashMap<String, String>();
     
@@ -43,13 +46,16 @@ public class Main {
                    new BufferedReader(inputStreamReader);
                 message = bufferedReader.readLine();
                 // verificar a operacao seleccionada
-                operation = message.split(":").toString();
-                System.out.println("Message: " + message + "Operation: " + operation);
+                operation = message.split(":");
                 
-            switch(operation){ 
+            switch(operation[0]){ 
             	case "LOGIN" :
             		userName = (String) message.subSequence(7, message.length());
+            		System.out.println(userName);
             		listClients.put(userName, clientSocket.getLocalAddress()+"/"+port+"/0");
+            		outputStreamWriter.write("OK!");
+            		outputStreamWriter.flush();
+            		outputStreamWriter.close();
             		break;
             	case "TWEET" :
             		break;
