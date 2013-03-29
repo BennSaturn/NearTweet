@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 public class ClientConnectorTask extends AsyncTask<String, Void, Integer> {
         private Socket client;
         private PrintWriter printwriter;
+        
         protected Integer doInBackground(String...strings) {
                 // validate input parameters
                 if (strings.length <= 0) {

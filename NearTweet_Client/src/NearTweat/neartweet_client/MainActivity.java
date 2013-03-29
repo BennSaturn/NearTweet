@@ -9,23 +9,31 @@ import android.widget.EditText;
 
 public class MainActivity extends Activity {
 
-	private EditText textField;
-    private Button button;
+	private EditText enter_usernameTx;
+    private Button loginBt;
     private String message;
     @Override
     public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
-            textField = (EditText) findViewById(R.id.editText1);
-            button = (Button) findViewById(R.id.button1);
+            enter_usernameTx = (EditText) findViewById(R.id.enter_usernameTx);
+            loginBt = (Button) findViewById(R.id.loginBt);
+            
             //Button press event listener
-            button.setOnClickListener(new View.OnClickListener() {
+            loginBt.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                            message = textField.getText().toString();
-                            textField.setText("");
-                           new ClientConnectorTask().execute(message);
+                    	message = enter_usernameTx.getText().toString();
+                    	enter_usernameTx.setText("");
+                    	new ClientConnectorTask().execute("LOGIN: "+message);
+                    	waitLogin();
                     }
             });
+    }
+    
+    public void waitLogin(){
+    	setContentView(R.layout.wait);
+    	
+    	
     }
 
 	@Override
