@@ -104,6 +104,19 @@ public class Main {
             		// ver todos os portos/clientes existentes
             		break;
             	case "RETWEET" :
+            		tweet = (String) message.subSequence(9, message.length());
+            		System.out.println(tweet);
+            		// ver todos os portos/clientes existentes
+            		
+            		for (String s :listClients.values()){
+            			String[] portClient = s.split("/");
+               			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
+               			sendTweet.connect(endpoint);
+               			outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
+               			outputStreamWriter.write(tweet);
+               			outputStreamWriter.flush();
+               			outputStreamWriter.close();
+            		}
             		break;
             	case "POLL" :
             		break;
