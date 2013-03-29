@@ -53,6 +53,7 @@ public class Main {
             		userName = (String) message.subSequence(7, message.length());
             		System.out.println(userName);
             		listClients.put(userName, clientSocket.getLocalAddress()+"/"+port+"/0");
+            		outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
             		outputStreamWriter.write("OK!");
             		outputStreamWriter.flush();
             		outputStreamWriter.close();
