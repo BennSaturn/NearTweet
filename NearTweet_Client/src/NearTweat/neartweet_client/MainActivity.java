@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
                     	message = enter_usernameTx.getText().toString();
                     	enter_usernameTx.setText("");
                     	new ClientConnectorTask().execute("LOGIN: "+message);
-                    	waitLogin(message);
+                    	//waitLogin(message);
                     }
             });
     }
@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
     	setContentView(R.layout.wait);
     	System.out.println("entrou");
     	msg = new ClientConnectorTask().execute();
-    	
+    	System.out.println(msg);
     	if(msg.equals("OK!")){
     		System.out.println("entrou");
     		menuView(message);

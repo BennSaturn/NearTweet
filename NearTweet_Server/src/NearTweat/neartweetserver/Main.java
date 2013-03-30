@@ -13,7 +13,8 @@ import java.util.Map;
  
 public class Main {
  
-    private static ServerSocket serverSocket;
+    private static ServerSocket serverSocketReceive;
+    private static ServerSocket serverSocketSend;
     private static Socket clientSocket;
     private static Socket sendTweet;
     private static InputStreamReader inputStreamReader;
@@ -28,7 +29,8 @@ public class Main {
     public static void main(String[] args) {
  
         try {
-            serverSocket = new ServerSocket(4444);
+            serverSocketReceive = new ServerSocket(4444);
+            serverSocketSend = new ServerSocket(4445);
             
         } catch (IOException e) {
             System.out.println("Could not listen on port: 4444");
@@ -39,8 +41,7 @@ public class Main {
  
         while (true) {
             try {
-                clientSocket = serverSocket.accept();
-                
+                clientSocket = serverSocketReceive.accept();
                 Integer port = clientSocket.getPort();
                
                 inputStreamReader =
@@ -50,17 +51,17 @@ public class Main {
                 message = bufferedReader.readLine();
                 // verificar a operacao seleccionada
                 operation = message.split(":");
-                
             switch(operation[0]){ 
             	case "LOGIN" :
             		userName = (String) message.subSequence(7, message.length());
             		System.out.println(userName);
             		listClients.put(userName, clientSocket.getLocalAddress()+"/"+port+"/0");
+            		clientSocket = serverSocketSend.accept();
             		outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
             		outputStreamWriter.write("OK!");
             		outputStreamWriter.flush();
             		outputStreamWriter.close();
-            		break;
+            		return;
             	case "TWEET" :
             		tweet = (String) message.subSequence(7, message.length());
             		System.out.println(tweet);
@@ -127,8 +128,8 @@ public class Main {
             	case "SPAM" :
             		break;
             }    
-                inputStreamReader.close();
-                clientSocket.close();
+            	inputStreamReader.close();
+            	clientSocket.close();
  
             } catch (IOException ex) {
                 System.out.println("Problem in message reading");
