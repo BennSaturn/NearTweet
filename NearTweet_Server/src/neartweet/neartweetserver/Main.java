@@ -16,6 +16,7 @@ public class Main {
 	private static ServerSocket serverSocketSend;
 	private static Socket clientSocket;
 	private static Socket sendTweet;
+	private static Socket banUser;
 	private static InputStreamReader inputStreamReader;
 	private static OutputStreamWriter outputStreamWriter;
 	private static BufferedReader bufferedReader;
@@ -27,8 +28,10 @@ public class Main {
 	private static String sharing;
 	private static String spam;
 	private static Map<String, String> listClients = new HashMap<String, String>();
-	private static Map<String, Integer> tweetList = new HashMap<String, Integer>();
+	private static Map<String, Integer> spamTweetList = new HashMap<String, Integer>();
+	private static Map<String, String> userTweetList = new HashMap<String, String>();
 	private static int spamValue;
+	private static int banValue = 10;
 
 	public static void main(String[] args) {
 
@@ -68,15 +71,18 @@ public class Main {
 					return;
 				case "TWEET" :
 					tweet = (String) message.subSequence(7, message.length());
+					
 					System.out.println(tweet);
 					// ver todos os portos/clientes existentes
-					tweetList.put(tweet, 0);
+					String[] personTweet = tweet.split(":");
+					spamTweetList.put(personTweet[1], 0);;
+					userTweetList.put(personTweet[1], personTweet[0]);
 					for (String s :listClients.values()){
 						String[] portClient = s.split("/");
 						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
 						sendTweet.connect(endpoint);
 						outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-						outputStreamWriter.write(tweet);
+						outputStreamWriter.write(personTweet[1]);
 						outputStreamWriter.flush();
 						outputStreamWriter.close();
 					}
@@ -84,14 +90,15 @@ public class Main {
 				case "REPLY" :
 					tweet = (String) message.subSequence(7, message.length());
 
-					String[] person = tweet.split(":");
-					tweetList.put(person[1], 0);
-					if(listClients.get(person[0]) != null){
-						String[] portReply = listClients.get(person[0]).split("/");
+					String[] personReply = tweet.split(":");
+					spamTweetList.put(personReply[1], 0);;
+					userTweetList.put(personReply[1], personReply[0]);
+					if(listClients.get(personReply[0]) != null){
+						String[] portReply = listClients.get(personReply[0]).split("/");
 						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portReply[2]));
 						sendTweet.connect(endpoint);
 						outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-						outputStreamWriter.write(person[1]);
+						outputStreamWriter.write(personReply[1]);
 						outputStreamWriter.flush();
 						outputStreamWriter.close();
 					} else {
@@ -100,7 +107,7 @@ public class Main {
 							InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
 							sendTweet.connect(endpoint);
 							outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-							outputStreamWriter.write(person[1]);
+							outputStreamWriter.write(personReply[1]);
 							outputStreamWriter.flush();
 							outputStreamWriter.close();
 						}
@@ -126,7 +133,8 @@ public class Main {
 				case "POLL" :
 					poll = (String) message.subSequence(5, message.length());
 					System.out.println(poll);
-					tweetList.put(poll,0);
+					spamTweetList.put(poll, 0);
+					userTweetList.put(poll, userName);
 					for (String s :listClients.values()){
 						String[] portClient = s.split("/");
 						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
@@ -140,7 +148,8 @@ public class Main {
 				case "MSHARING" :
 					sharing = (String) message.subSequence(10, message.length());
 					System.out.println(sharing);
-					tweetList.put(sharing,0);
+					spamTweetList.put(sharing, 0);
+					userTweetList.put(sharing, userName);
 					for (String s :listClients.values()){
 						String[] portClient = s.split("/");
 						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
@@ -154,7 +163,8 @@ public class Main {
 				case "SDSHARING" :
 					sharing = (String) message.subSequence(11, message.length());
 					System.out.println(sharing);
-					tweetList.put(sharing,0);
+					spamTweetList.put(sharing, 0);
+					userTweetList.put(sharing, userName);
 					for (String s :listClients.values()){
 						String[] portClient = s.split("/");
 						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
@@ -168,10 +178,25 @@ public class Main {
 				case "SPAM" :
 					spam = (String) message.subSequence(4, message.length());
 					System.out.println(spam);
-					spamValue = tweetList.get(spam);
-					tweetList.remove(spam);
+					spamValue = spamTweetList.get(spam);
+					spamTweetList.remove(spam);
 					spamValue += 1;
-					tweetList.put(spam, spamValue);
+					
+					if(spamValue == banValue){
+						userTweetList.remove(spam);
+						String bannedUser[] = listClients.get(userName).split("/");
+						// informacao para o utilizador a banir
+						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(bannedUser[2]));
+						banUser.connect(endpoint);
+						outputStreamWriter = new OutputStreamWriter(banUser.getOutputStream());
+						outputStreamWriter.write("BANNED!");
+						outputStreamWriter.flush();
+						outputStreamWriter.close();
+						listClients.remove(userName);
+						break;
+					}
+					
+					spamTweetList.put(spam, spamValue);
 					clientSocket = serverSocketSend.accept();
 					outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
 					outputStreamWriter.write("OK!");
