@@ -2,24 +2,30 @@ package neartweet.neartweetclient;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
+import android.app.ListActivity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MenuActivity extends Activity {
+public class TweetListActivity extends ListActivity {
 
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_menu);
+		setContentView(R.layout.tweets);
 		// Show the Up button in the action bar.
 		setupActionBar();
 	}
 
+	
+	
+	
+	
+	
+	
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */

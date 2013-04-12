@@ -35,7 +35,6 @@ public class MainActivity extends Activity {
 		message = enter_usernameTx.getText().toString();
 		enter_usernameTx.setText("");
 		new LoginResponseTask(this).execute("LOGIN: "+message);
-		System.out.println(message);
 		//new ClientConnectorTask().execute("LOGIN:"+ message);
 	}
 
@@ -44,8 +43,7 @@ public class MainActivity extends Activity {
 		System.out.println("MainActivity: "+ result);
 		
 		if(result.equals("OK!")){
-			System.out.println("entrou HEHEHEH");
-			Intent intent = new Intent(this, MenuActivity.class);
+			Intent intent = new Intent(this, TweetListActivity.class);
 			intent.putExtra(USERNAME, message);
 			startActivity(intent);
 		} else if(result.equals("EXISTE!")){

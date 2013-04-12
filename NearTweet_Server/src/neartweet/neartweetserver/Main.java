@@ -61,7 +61,7 @@ public class Main {
 				switch(operation[0]){ 
 				case "LOGIN" :
 					userName = (String) message.subSequence(7, message.length());
-					System.out.println(userName);
+					System.out.println(userName+port+clientSocket.getLocalAddress());
 					listClients.put(userName, clientSocket.getLocalAddress()+"/"+port+"/0");
 					clientSocket = serverSocketSend.accept();
 					outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());

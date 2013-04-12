@@ -1,0 +1,27 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".TweetListActivity" >
+
+    	<TextView android:id="@+id/tweetUsername" 
+   			android:layout_width="wrap_content"
+       		android:layout_height="wrap_content" 
+   			android:textSize="16sp" 
+   	  		android:text="@string/profilename">
+        </TextView>
+    
+    	<TextView android:id="@+id/tweetMessage"
+            android:layout_width="wrap_content"
+          	android:layout_height="wrap_content" 
+          	android:textSize="14sp"
+         	android:layout_below="@id/tweetUsername" 
+         	android:layout_alignLeft="@id/tweetUsername"
+         	android:minLines="5">
+        </TextView>
+
+</RelativeLayout>

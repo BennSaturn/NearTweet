@@ -26,8 +26,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="neartweet.neartweetclient.MenuActivity"
-            android:label="@string/title_activity_menu"
+            android:name="neartweet.neartweetclient.TweetListActivity"
+            android:label="@string/title_activity_tweetlist"
             android:parentActivityName="neartweet.neartweetclient.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

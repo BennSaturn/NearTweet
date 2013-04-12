@@ -6,7 +6,9 @@
     <string name="username">User Name: </string>
     <string name="login">Login</string>
     <string name="empty"></string>
-    <string name="title_activity_menu">NearTweet</string>
+    <string name="title_activity_tweetlist">NearTweet</string>
     <string name="hello_world">Hello world!</string>
+    <string name="profilename">Profile Name</string>
+    <string name="tweets">Tweets</string>
 
 </resources>
