@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class Main {
 
-	private static ServerSocket serverSocketReceive;
-	private static ServerSocket serverSocketSend;
+	private static ServerSocket serverSocketReceive = null;
+	private static ServerSocket serverSocketSend = null;
 	private static Socket clientSocket;
 	private static Socket sendTweet;
 	private static Socket banUser;
@@ -32,185 +32,271 @@ public class Main {
 	private static Map<String, String> userTweetList = new HashMap<String, String>();
 	private static int spamValue;
 	private static int banValue = 10;
+	private static Integer port = null;
 
 	public static void main(String[] args) {
 
 		try {
 			serverSocketReceive = new ServerSocket(4444);
 			serverSocketSend = new ServerSocket(4445);
-
 		} catch (IOException e) {
 			System.out.println("Could not listen on port: 4444");
 		}
 
-		System.out.println("hello!");
-		System.out.println("Server started. Listening to the port 4444");
+		System.out.println("Server Receive started. Listening to the port 4444");
+		System.out.println("Server Send  started. Listening to the port 4445");
 
 		while (true) {
 			try {
 				clientSocket = serverSocketReceive.accept();
-				Integer port = clientSocket.getPort();
+				port = clientSocket.getPort();
 
 				inputStreamReader =
 						new InputStreamReader(clientSocket.getInputStream());
 				bufferedReader =
 						new BufferedReader(inputStreamReader);
 				message = bufferedReader.readLine();
-				// verificar a operacao seleccionada
 				operation = message.split(":");
-				switch(operation[0]){ 
-				case "LOGIN" :
-					userName = (String) message.subSequence(7, message.length());
-					System.out.println(userName+port+clientSocket.getLocalAddress());
-					listClients.put(userName, clientSocket.getLocalAddress()+"/"+port+"/0");
-					clientSocket = serverSocketSend.accept();
-					outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
-					outputStreamWriter.write("OK!");
-					outputStreamWriter.flush();
-					outputStreamWriter.close();
-					return;
-				case "TWEET" :
-					tweet = (String) message.subSequence(7, message.length());
-					
-					System.out.println(tweet);
-					// ver todos os portos/clientes existentes
-					String[] personTweet = tweet.split(":");
-					spamTweetList.put(personTweet[1], 0);;
-					userTweetList.put(personTweet[1], personTweet[0]);
-					for (String s :listClients.values()){
-						String[] portClient = s.split("/");
-						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-						sendTweet.connect(endpoint);
-						outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-						outputStreamWriter.write(personTweet[1]);
-						outputStreamWriter.flush();
-						outputStreamWriter.close();
-					}
-					break;
-				case "REPLY" :
-					tweet = (String) message.subSequence(7, message.length());
-
-					String[] personReply = tweet.split(":");
-					spamTweetList.put(personReply[1], 0);;
-					userTweetList.put(personReply[1], personReply[0]);
-					if(listClients.get(personReply[0]) != null){
-						String[] portReply = listClients.get(personReply[0]).split("/");
-						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portReply[2]));
-						sendTweet.connect(endpoint);
-						outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-						outputStreamWriter.write(personReply[1]);
-						outputStreamWriter.flush();
-						outputStreamWriter.close();
-					} else {
-						for (String s :listClients.values()){
-							String[] portClient = s.split("/");
-							InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-							sendTweet.connect(endpoint);
-							outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-							outputStreamWriter.write(personReply[1]);
-							outputStreamWriter.flush();
-							outputStreamWriter.close();
-						}
-					}
-					System.out.println(tweet);
-					// ver todos os portos/clientes existentes
-					break;
-				case "RETWEET" :
-					tweet = (String) message.subSequence(9, message.length());
-					System.out.println(tweet);
-					// ver todos os portos/clientes existentes
-
-					for (String s :listClients.values()){
-						String[] portClient = s.split("/");
-						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-						sendTweet.connect(endpoint);
-						outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-						outputStreamWriter.write(tweet);
-						outputStreamWriter.flush();
-						outputStreamWriter.close();
-					}
-					break;
-				case "POLL" :
-					poll = (String) message.subSequence(5, message.length());
-					System.out.println(poll);
-					spamTweetList.put(poll, 0);
-					userTweetList.put(poll, userName);
-					for (String s :listClients.values()){
-						String[] portClient = s.split("/");
-						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-						sendTweet.connect(endpoint);
-						outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-						outputStreamWriter.write(poll);
-						outputStreamWriter.flush();
-						outputStreamWriter.close();
-					}
-					break;
-				case "MSHARING" :
-					sharing = (String) message.subSequence(10, message.length());
-					System.out.println(sharing);
-					spamTweetList.put(sharing, 0);
-					userTweetList.put(sharing, userName);
-					for (String s :listClients.values()){
-						String[] portClient = s.split("/");
-						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-						sendTweet.connect(endpoint);
-						outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-						outputStreamWriter.write(sharing);
-						outputStreamWriter.flush();
-						outputStreamWriter.close();
-					}
-					break;
-				case "SDSHARING" :
-					sharing = (String) message.subSequence(11, message.length());
-					System.out.println(sharing);
-					spamTweetList.put(sharing, 0);
-					userTweetList.put(sharing, userName);
-					for (String s :listClients.values()){
-						String[] portClient = s.split("/");
-						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-						sendTweet.connect(endpoint);
-						outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-						outputStreamWriter.write(sharing);
-						outputStreamWriter.flush();
-						outputStreamWriter.close();
-					}
-					break;
-				case "SPAM" :
-					spam = (String) message.subSequence(4, message.length());
-					System.out.println(spam);
-					spamValue = spamTweetList.get(spam);
-					spamTweetList.remove(spam);
-					spamValue += 1;
-					
-					if(spamValue == banValue){
-						userTweetList.remove(spam);
-						String bannedUser[] = listClients.get(userName).split("/");
-						// informacao para o utilizador a banir
-						InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(bannedUser[2]));
-						banUser.connect(endpoint);
-						outputStreamWriter = new OutputStreamWriter(banUser.getOutputStream());
-						outputStreamWriter.write("BANNED!");
-						outputStreamWriter.flush();
-						outputStreamWriter.close();
-						listClients.remove(userName);
-						break;
-					}
-					
-					spamTweetList.put(spam, spamValue);
-					clientSocket = serverSocketSend.accept();
-					outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
-					outputStreamWriter.write("OK!");
-					outputStreamWriter.flush();
-					outputStreamWriter.close();
-					break;
-				}    
-				inputStreamReader.close();
-				clientSocket.close();
-
 			} catch (IOException ex) {
 				System.out.println("Problem in message reading");
+			}		
+				switch(operation[0]){ 
+				case "LOGIN" :
+					login(port);
+					break;
+				case "TWEET" :
+					tweet();
+					break;
+				case "REPLY" :
+					reply();
+					break;
+				case "RETWEET" :
+					retweet();
+					break;
+				case "POLL" :
+					poll();
+					break;
+				case "MSHARING" :
+					mdsharing();
+					break;
+				case "SDSHARING" :
+					sdsharing();
+					break;
+				case "SPAM" :
+					spam();		
+					break;
+				}    
+
+			try {
+				inputStreamReader.close();
+				clientSocket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
+
+	public static void login(Integer port){
+		userName = (String) message.subSequence(7, message.length());
+		System.out.println(userName+port+clientSocket.getLocalAddress());
+		listClients.put(userName, clientSocket.getLocalAddress()+"/"+port+"/0");
+		try {
+			clientSocket = serverSocketSend.accept();
+			outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
+			outputStreamWriter.write("OK!");
+			outputStreamWriter.flush();
+			outputStreamWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void tweet(){
+		tweet = (String) message.subSequence(7, message.length());
+		System.out.println(tweet);
+		// ver todos os portos/clientes existentes
+		String[] personTweet = tweet.split(":");
+		spamTweetList.put(personTweet[1], 0);;
+		userTweetList.put(personTweet[1], personTweet[0]);
+		for (String s :listClients.values()){
+			String[] portClient = s.split("/");
+			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
+			try {
+				sendTweet.connect(endpoint);
+				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
+				outputStreamWriter.write(personTweet[1]);
+				outputStreamWriter.flush();
+				outputStreamWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}	
+	}
+
+	public static void reply(){
+		tweet = (String) message.subSequence(7, message.length());
+
+		String[] personReply = tweet.split(":");
+		spamTweetList.put(personReply[1], 0);;
+		userTweetList.put(personReply[1], personReply[0]);
+		if(listClients.get(personReply[0]) != null){
+			String[] portReply = listClients.get(personReply[0]).split("/");
+			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portReply[2]));
+			try {
+				sendTweet.connect(endpoint);
+				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
+				outputStreamWriter.write(personReply[1]);
+				outputStreamWriter.flush();
+				outputStreamWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+		} else {
+			for (String s :listClients.values()){
+				String[] portClient = s.split("/");
+				InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
+				try {
+					sendTweet.connect(endpoint);
+					outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
+					outputStreamWriter.write(personReply[1]);
+					outputStreamWriter.flush();
+					outputStreamWriter.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		System.out.println(tweet);
+	}
+
+	public static void retweet(){
+		tweet = (String) message.subSequence(9, message.length());
+		System.out.println(tweet);
+		// ver todos os portos/clientes existentes
+
+		for (String s :listClients.values()){
+			String[] portClient = s.split("/");
+			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
+			try {
+				sendTweet.connect(endpoint);
+				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
+				outputStreamWriter.write(tweet);
+				outputStreamWriter.flush();
+				outputStreamWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void poll(){
+		poll = (String) message.subSequence(5, message.length());
+		System.out.println(poll);
+		spamTweetList.put(poll, 0);
+		userTweetList.put(poll, userName);
+		for (String s :listClients.values()){
+			String[] portClient = s.split("/");
+			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
+			try {
+				sendTweet.connect(endpoint);
+				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
+				outputStreamWriter.write(poll);
+				outputStreamWriter.flush();
+				outputStreamWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void mdsharing(){
+		sharing = (String) message.subSequence(10, message.length());
+		System.out.println(sharing);
+		spamTweetList.put(sharing, 0);
+		userTweetList.put(sharing, userName);
+		for (String s :listClients.values()){
+			String[] portClient = s.split("/");
+			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
+			try {
+				sendTweet.connect(endpoint);
+				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
+				outputStreamWriter.write(sharing);
+				outputStreamWriter.flush();
+				outputStreamWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void sdsharing(){
+		sharing = (String) message.subSequence(11, message.length());
+		System.out.println(sharing);
+		spamTweetList.put(sharing, 0);
+		userTweetList.put(sharing, userName);
+		for (String s :listClients.values()){
+			String[] portClient = s.split("/");
+			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
+			try {
+				sendTweet.connect(endpoint);
+				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
+				outputStreamWriter.write(sharing);
+				outputStreamWriter.flush();
+				outputStreamWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+	public static void spam(){
+		spam = (String) message.subSequence(4, message.length());
+		System.out.println(spam);
+		spamValue = spamTweetList.get(spam);
+		spamTweetList.remove(spam);
+		spamValue += 1;
+
+		if(spamValue == banValue){
+			userTweetList.remove(spam);
+			String bannedUser[] = listClients.get(userName).split("/");
+			// informacao para o utilizador a banir
+			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(bannedUser[2]));
+			try {
+				banUser.connect(endpoint);
+				outputStreamWriter = new OutputStreamWriter(banUser.getOutputStream());
+				outputStreamWriter.write("BANNED!");
+				outputStreamWriter.flush();
+				outputStreamWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			listClients.remove(userName);
+			return;
+		}
+		spamTweetList.put(spam, spamValue);
+		try {
+			clientSocket = serverSocketSend.accept();
+			outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
+			outputStreamWriter.write("OK!");
+			outputStreamWriter.flush();
+			outputStreamWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }
 
