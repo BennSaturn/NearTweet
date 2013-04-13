@@ -10,5 +10,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="profilename">Profile Name</string>
     <string name="tweets">Tweets</string>
+    <string name="logout">Logout</string>
+    <string name="poll">Poll</string>
 
 </resources>
