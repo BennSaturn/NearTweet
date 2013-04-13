@@ -23,7 +23,30 @@
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="378dp" >
     </ListView>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="1" >
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="145dp"
+            android:layout_column="0"
+            android:layout_gravity="left|top"
+            android:layout_row="0"
+            android:text="Tweet" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="145dp"
+            android:layout_column="0"
+            android:layout_gravity="right|top"
+            android:layout_row="0"
+            android:text="Refresh" />
+
+    </GridLayout>
 
 </LinearLayout>
