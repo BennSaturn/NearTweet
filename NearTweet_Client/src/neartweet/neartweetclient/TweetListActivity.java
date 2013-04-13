@@ -15,15 +15,10 @@ public class TweetListActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.tweets);
+		setContentView(R.layout.tweetlist);	
 		// Show the Up button in the action bar.
 		setupActionBar();
 	}
-
-	
-	
-	
-	
 	
 	
 	/**
