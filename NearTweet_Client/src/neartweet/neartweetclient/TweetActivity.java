@@ -2,39 +2,62 @@ package neartweet.neartweetclient;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.ListActivity;
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.Toast;
 
-public class TweetListActivity extends ListActivity {
+public class TweetActivity extends Activity {
 
 	@SuppressLint("NewApi")
-	private Button TweetBtn;
+
+	private Button PicBtn;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.tweetlist);	
+		setContentView(R.layout.tweets);	
 		// Show the Up button in the action bar.
 		setupActionBar();
-		
-		 TweetBtn = (Button) findViewById(R.id.tweet);
-         TweetBtn.setOnClickListener(new View.OnClickListener() {
 
-             public void onClick(View v) {
-     			Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
-    			startActivity(intent);
-             }
-         });
-     }
-	
-	
-	
+		PicBtn = (Button) findViewById(R.id.button1);
+
+		OnClickListener listener = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				/** Instantiating PopupMenu class */
+				PopupMenu popup = new PopupMenu(getBaseContext(), v);
+
+				/** Adding menu items to the popumenu */
+				popup.getMenuInflater().inflate(R.menu.popuppicmenu, popup.getMenu());
+
+				/** Defining menu item click listener for the popup menu */
+				popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+					@Override
+					public boolean onMenuItemClick(MenuItem item) {
+						Toast.makeText(getBaseContext(), "You selected the action : " + item.getTitle(), 
+								Toast.LENGTH_SHORT).show();
+						return true;
+					}
+				});
+
+				/** Showing the popup menu */
+				popup.show();
+
+			}
+		};
+		PicBtn.setOnClickListener(listener);
+	}
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */

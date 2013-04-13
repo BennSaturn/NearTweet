@@ -12,5 +12,6 @@
     <string name="tweets">Tweets</string>
     <string name="logout">Logout</string>
     <string name="poll">Poll</string>
+    <string name="title_activity_tweet">NearTweet</string>
 
 </resources>

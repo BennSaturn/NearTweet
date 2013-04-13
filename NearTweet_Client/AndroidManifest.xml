@@ -33,6 +33,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="neartweet.neartweetclient.MainActivity" />
         </activity>
+        <activity
+            android:name="neartweet.neartweetclient.TweetActivity"
+            android:label="@string/title_activity_tweet"
+            android:parentActivityName="neartweet.neartweetclient.TweetListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="neartweet.neartweetclient.TweetListActivity" />
+        </activity>
     </application>
 
 </manifest>

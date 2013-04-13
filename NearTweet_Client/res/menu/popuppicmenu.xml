@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <group android:id="@+id/group_popupmenu">
+      <item android:id="@+id/clipboard"
+          android:title="From Clipboard"/>
+      <item android:id="@+id/url"
+          android:title="From URL"/>
+      <item android:id="@+id/otherapp"
+          android:title="From other application"/>
+  </group>
+</menu>
