@@ -101,6 +101,7 @@ public class Main {
 		userName = (String) message.subSequence(7, message.length());
 		System.out.println(userName+port+clientSocket.getLocalAddress());
 		listClients.put(userName, clientSocket.getLocalAddress()+"/"+port+"/0");
+		
 		try {
 			clientSocket = serverSocketSend.accept();
 			outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
@@ -123,16 +124,7 @@ public class Main {
 		for (String s :listClients.values()){
 			String[] portClient = s.split("/");
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-			try {
-				sendTweet.connect(endpoint);
-				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-				outputStreamWriter.write(personTweet[1]);
-				outputStreamWriter.flush();
-				outputStreamWriter.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			sendMsg(sendTweet, personTweet[1], endpoint);
 		}	
 	}
 
@@ -145,30 +137,12 @@ public class Main {
 		if(listClients.get(personReply[0]) != null){
 			String[] portReply = listClients.get(personReply[0]).split("/");
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portReply[2]));
-			try {
-				sendTweet.connect(endpoint);
-				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-				outputStreamWriter.write(personReply[1]);
-				outputStreamWriter.flush();
-				outputStreamWriter.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
+			sendMsg(sendTweet, personReply[1], endpoint);	
 		} else {
 			for (String s :listClients.values()){
 				String[] portClient = s.split("/");
 				InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-				try {
-					sendTweet.connect(endpoint);
-					outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-					outputStreamWriter.write(personReply[1]);
-					outputStreamWriter.flush();
-					outputStreamWriter.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				sendMsg(sendTweet, personReply[1], endpoint);
 			}
 		}
 		System.out.println(tweet);
@@ -182,16 +156,7 @@ public class Main {
 		for (String s :listClients.values()){
 			String[] portClient = s.split("/");
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-			try {
-				sendTweet.connect(endpoint);
-				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-				outputStreamWriter.write(tweet);
-				outputStreamWriter.flush();
-				outputStreamWriter.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			sendMsg(sendTweet, tweet, endpoint);
 		}
 	}
 
@@ -203,16 +168,7 @@ public class Main {
 		for (String s :listClients.values()){
 			String[] portClient = s.split("/");
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-			try {
-				sendTweet.connect(endpoint);
-				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-				outputStreamWriter.write(poll);
-				outputStreamWriter.flush();
-				outputStreamWriter.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			sendMsg(sendTweet, poll, endpoint);
 		}
 	}
 
@@ -224,16 +180,7 @@ public class Main {
 		for (String s :listClients.values()){
 			String[] portClient = s.split("/");
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-			try {
-				sendTweet.connect(endpoint);
-				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-				outputStreamWriter.write(sharing);
-				outputStreamWriter.flush();
-				outputStreamWriter.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			sendMsg(sendTweet, sharing, endpoint);
 		}
 	}
 
@@ -245,17 +192,7 @@ public class Main {
 		for (String s :listClients.values()){
 			String[] portClient = s.split("/");
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-			try {
-				sendTweet.connect(endpoint);
-				outputStreamWriter = new OutputStreamWriter(sendTweet.getOutputStream());
-				outputStreamWriter.write(sharing);
-				outputStreamWriter.flush();
-				outputStreamWriter.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			sendMsg(sendTweet, sharing, endpoint);
 		}
 	}
 
@@ -271,17 +208,7 @@ public class Main {
 			String bannedUser[] = listClients.get(userName).split("/");
 			// informacao para o utilizador a banir
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(bannedUser[2]));
-			try {
-				banUser.connect(endpoint);
-				outputStreamWriter = new OutputStreamWriter(banUser.getOutputStream());
-				outputStreamWriter.write("BANNED!");
-				outputStreamWriter.flush();
-				outputStreamWriter.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			sendMsg(banUser, "BANNED!", endpoint);
 			listClients.remove(userName);
 			return;
 		}
@@ -290,6 +217,19 @@ public class Main {
 			clientSocket = serverSocketSend.accept();
 			outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
 			outputStreamWriter.write("OK!");
+			outputStreamWriter.flush();
+			outputStreamWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void sendMsg(Socket soc, String msg, InetSocketAddress endpoint){
+		try {
+			sendTweet.connect(endpoint);
+			outputStreamWriter = new OutputStreamWriter(soc.getOutputStream());
+			outputStreamWriter.write(msg);
 			outputStreamWriter.flush();
 			outputStreamWriter.close();
 		} catch (IOException e) {
