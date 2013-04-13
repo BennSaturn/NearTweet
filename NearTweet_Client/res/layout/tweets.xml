@@ -1,27 +1,73 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/GridLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:columnCount="2"
+    android:orientation="horizontal"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".TweetListActivity" >
 
-    	<TextView android:id="@+id/tweetUsername" 
-   			android:layout_width="wrap_content"
-       		android:layout_height="wrap_content" 
-   			android:textSize="16sp" 
-   	  		android:text="@string/profilename">
-        </TextView>
-    
-    	<TextView android:id="@+id/tweetMessage"
-            android:layout_width="wrap_content"
-          	android:layout_height="wrap_content" 
-          	android:textSize="14sp"
-         	android:layout_below="@id/tweetUsername" 
-         	android:layout_alignLeft="@id/tweetUsername"
-         	android:minLines="5">
-        </TextView>
+    <TextView
+        android:id="@+id/tweetUsername"
+        android:layout_gravity="left"
+        android:text="@string/profilename"
+        android:textSize="16sp" >
+    </TextView>
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/tweetMessage"
+        android:layout_column="0"
+        android:layout_gravity="left"
+        android:minLines="5"
+        android:textSize="14sp" >
+    </TextView>
+
+    <Space
+        android:layout_column="1"
+        android:layout_gravity="fill_vertical"
+        android:layout_row="5" />
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="290dp"
+        android:layout_height="100dp"
+        android:layout_column="0"
+        android:layout_gravity="left"
+        android:layout_row="1"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:singleLine="false" >
+
+        <requestFocus />
+    </EditText>
+    <!-- android:drawableTop="@drawable/photo" -->
+    <!-- android:drawableCenter="@drawable/gps" -->
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="113dp"
+        android:layout_column="0"
+        android:layout_gravity="left|top"
+        android:layout_row="2"
+        android:text="Photo" />
+    android:drawableTop="@drawable/photo"/>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_column="0"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_row="2"
+        android:text="GPS" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_column="0"
+        android:layout_gravity="right|top"
+        android:layout_row="2"
+        android:text="SendTweet" />
+
+</GridLayout>
