@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
 		}
 		message = enter_usernameTx.getText().toString();
 		enter_usernameTx.setText("");
-		new LoginResponseTask(this).execute("LOGIN: "+message);
+		new LoginResponseTask(this).execute("LOGIN: "+ message);
 		//new ClientConnectorTask().execute("LOGIN:"+ message);
 	}
 

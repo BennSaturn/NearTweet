@@ -10,13 +10,10 @@ import java.net.UnknownHostException;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
-public class LoginResponseTask extends AsyncTask<String, String, String>  {
+public class LoginResponseTask extends AsyncTask<String, String, String> {
 	private ProgressDialog progress;
 	private MainActivity context;
-	private Socket clientSend;
-	private Socket clientReceive;
-	private PrintWriter printwriter;
-	private BufferedReader inputReader;
+	private String result;
 
 	public LoginResponseTask(MainActivity context) {
 		this.context = context;
@@ -49,37 +46,22 @@ public class LoginResponseTask extends AsyncTask<String, String, String>  {
 		}
 
 		// connect to the server and send the message
-		try {
-			System.out.println("Inicio dos sockets!!");
-			clientSend = new Socket("10.0.2.2", 4444);
-			clientReceive = new Socket("10.0.2.2", 4445);
-			printwriter = new PrintWriter(clientSend.getOutputStream(),true);
-			inputReader = new BufferedReader(new InputStreamReader(clientReceive.getInputStream()));
-			printwriter.write(params[0]);
-			printwriter.flush();      
-			printwriter.close();
-			clientSend.close();
-		
-			//int init = (int) System.currentTimeMillis();
-			//System.out.println(init);
-			int time = 0;
-			long timeout = 100;
-			String line;
-			while (time<timeout){
-				//time += (int) (System.currentTimeMillis() - init);
-				time ++;
-				System.out.println(time);
-				if ((line = inputReader.readLine()) != null){
-					inputReader.close();
-					clientReceive.close();
-					System.out.println("ClientConnecterTask: "+line.toString());
-					return line.toString();
-				}
+		System.out.println("params[0]: " + params[0]);
+		result = CommunicationCS.obtainInfo(params[0]);
+
+		//int init = (int) System.currentTimeMillis();
+		//System.out.println(init);
+		int time = 0;
+		long timeout = 100;
+		while (time<timeout){
+			//time += (int) (System.currentTimeMillis() - init);
+			time ++;
+			System.out.println(time);
+
+			if (result != null){
+				System.out.println("ClientConnecterTask: "+result);
+				return result;
 			}
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		return "ERRO!";
 	}
@@ -90,7 +72,7 @@ public class LoginResponseTask extends AsyncTask<String, String, String>  {
 		System.out.println("onPostExecute!!!!!!!");
 		progress.dismiss();
 		context.setResult(result);
-		
+
 	}
 
 	@Override

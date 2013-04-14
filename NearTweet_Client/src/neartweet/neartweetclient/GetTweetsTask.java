@@ -1,27 +1,19 @@
 package neartweet.neartweetclient;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.zip.GZIPInputStream;
-
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
-public class GetTweetsTask extends AsyncTask<String, String, Map<String,String>>{
+public class GetTweetsTask extends AsyncTask<String, String, List<Tweet>>{
 
 	private ProgressDialog progress;
 	private TweetListActivity context;
-	private Socket clientSend;
-	private Socket clientReceive;
-	private PrintWriter printwriter;
-
+	private List<Tweet> objectInput;
+	
 	public GetTweetsTask(TweetListActivity context) {
 		this.context = context;
 	}
@@ -35,7 +27,7 @@ public class GetTweetsTask extends AsyncTask<String, String, Map<String,String>>
 	}
 
 	@Override
-	protected Map<String,String> doInBackground(String... params) {
+	protected List<Tweet> doInBackground(String... params) {
 
 		System.out.println("doInBackground!!!!!!!");
 		// validate input parameters
@@ -52,17 +44,8 @@ public class GetTweetsTask extends AsyncTask<String, String, Map<String,String>>
 		}
 
 		// connect to the server and send the message
-		try {
-			System.out.println("Inicio dos sockets!!");
-			clientSend = new Socket("10.0.2.2", 4444);
-			clientReceive = new Socket("10.0.2.2", 4445);
-			printwriter = new PrintWriter(clientSend.getOutputStream(),true);
-			ObjectInputStream objectInput = new ObjectInputStream(new GZIPInputStream(clientReceive.getInputStream()));
-			printwriter.write(params[0]);
-			printwriter.flush();      
-			printwriter.close();
-			clientSend.close();
-		
+			System.out.println("params[0]: " + params[0]);
+			objectInput = CommunicationCS.obtainInfo2(params[0]);
 			//int init = (int) System.currentTimeMillis();
 			//System.out.println(init);
 			int time = 0;
@@ -72,25 +55,17 @@ public class GetTweetsTask extends AsyncTask<String, String, Map<String,String>>
 				//time += (int) (System.currentTimeMillis() - init);
 				time ++;
 				System.out.println(time);
-				if ((list = (Map<String, String>) objectInput.readObject()) != null){
-					objectInput.close();
-					clientReceive.close();
-					System.out.println("ClientConnecterTask: "+list.toString());
-					return list;
+				if (objectInput != null){
+					//clientReceive.close();
+					System.out.println("GetTweetsTask: "+objectInput.toString());
+					return objectInput;
 				}
 			}
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return objectInput;
 	}
 
 	@Override
-	protected void onPostExecute(Map<String,String> result) {
+	protected void onPostExecute(List<Tweet> result) {
 		//Cancela progressDialogo e envia resultado
 		System.out.println("onPostExecute!!!!!!!");
 		progress.dismiss();

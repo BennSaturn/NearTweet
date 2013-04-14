@@ -42,9 +42,9 @@ public class TweetListActivity extends ListActivity {
          });
      }
 	
-	public void setTweetList(Map<String, String> tweetList){
+	public void setTweetList(List<Tweet> tweetList){
 		if(tweetList != null){
-			setListAdapter(new TweetAdapter(this, getTweets(tweetList)));
+			setListAdapter(new TweetAdapter(this, tweetList));
 			//ListView listView = (ListView) findViewById(R.id.);
 			//listView.setAdapter(new TweetItemAdapter(this, R.layout.listitem, tweets));
 		}
@@ -59,15 +59,6 @@ public class TweetListActivity extends ListActivity {
 		public void onClick(DialogInterface dialog, int which) {
 		}
 		}).show();
-	}
-	
-	public static List<Tweet> getTweets(Map<String,String> list){
-		List<Tweet> tweetList = new ArrayList<Tweet>();
-		for(Entry<String, String> entry : list.entrySet()){
-			Tweet tweet = new Tweet(entry.getKey(), entry.getValue());
-			tweetList.add(tweet);
-		}
-		return tweetList;
 	}
 	
 	/**

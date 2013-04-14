@@ -46,8 +46,7 @@ public class Main {
 		}
 
 		System.out.println("Server Receive started. Listening to the port 4444");
-		System.out.println("Server Send  started. Listening to the port 4445");
-
+		System.out.println("Server Send started. Listening to the port 4445");
 		userTweetList.put("NearTweetStaff", "Welcome to NearTweet, enjoy!");
 		while (true) {
 			try {
@@ -95,11 +94,11 @@ public class Main {
 
 			try {
 				inputStreamReader.close();
-				clientSocket.close();
+				//clientSocket.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			} 
 		}
 	}
 
@@ -232,11 +231,23 @@ public class Main {
 	}
 	
 	public static void getlist(){
-		for (String s :listClients.values()){
-			String[] portClient = s.split("/");
-			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-			sendObject(sendTweet, userTweetList, endpoint);
-		}	
+	//	for (String s :listClients.values()){
+	//		String[] portClient = s.split("/");
+	//		InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
+	//		sendObject(sendTweet, userTweetList, endpoint);
+	//	}  	
+		try {
+			clientSocket = serverSocketSend.accept();
+			outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
+			outputStreamWriter.write(userTweetList.toString());
+			outputStreamWriter.flush();
+			outputStreamWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
 	}
 	
 	public static void sendMsg(Socket soc, String msg, InetSocketAddress endpoint){
