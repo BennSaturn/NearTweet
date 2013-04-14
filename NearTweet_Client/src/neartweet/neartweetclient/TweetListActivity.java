@@ -7,7 +7,9 @@ import java.util.Map.Entry;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +48,17 @@ public class TweetListActivity extends ListActivity {
 			//ListView listView = (ListView) findViewById(R.id.);
 			//listView.setAdapter(new TweetItemAdapter(this, R.layout.listitem, tweets));
 		}
+		else {
+			nearTweetAlert("Servidor em baixo!");
+		}
+	}
+	
+	private void nearTweetAlert(String msg){
+		new AlertDialog.Builder(this).setTitle("NearTweet Alert!").setMessage(msg)
+		.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+		public void onClick(DialogInterface dialog, int which) {
+		}
+		}).show();
 	}
 	
 	public static List<Tweet> getTweets(Map<String,String> list){
