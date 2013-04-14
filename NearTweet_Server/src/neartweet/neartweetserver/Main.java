@@ -3,6 +3,7 @@ package neartweet.neartweetserver;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -19,6 +20,7 @@ public class Main {
 	private static Socket banUser;
 	private static InputStreamReader inputStreamReader;
 	private static OutputStreamWriter outputStreamWriter;
+	private static ObjectOutputStream objOutputStream;
 	private static BufferedReader bufferedReader;
 	private static String message;
 	private static String[] operation;
@@ -85,6 +87,9 @@ public class Main {
 				case "SPAM" :
 					spam();		
 					break;
+				case "GETLIST" :
+					getlist();		
+					break;	
 				}    
 
 			try {
@@ -225,6 +230,14 @@ public class Main {
 		}
 	}
 	
+	public static void getlist(){
+		for (String s :listClients.values()){
+			String[] portClient = s.split("/");
+			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
+			sendObject(sendTweet, userTweetList, endpoint);
+		}	
+	}
+	
 	public static void sendMsg(Socket soc, String msg, InetSocketAddress endpoint){
 		try {
 			sendTweet.connect(endpoint);
@@ -232,6 +245,19 @@ public class Main {
 			outputStreamWriter.write(msg);
 			outputStreamWriter.flush();
 			outputStreamWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void sendObject(Socket soc, Object o, InetSocketAddress endpoint){
+		try {
+			sendTweet.connect(endpoint);
+			objOutputStream = new ObjectOutputStream(soc.getOutputStream());
+			objOutputStream.writeObject(o);
+			objOutputStream.flush();
+			objOutputStream.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
