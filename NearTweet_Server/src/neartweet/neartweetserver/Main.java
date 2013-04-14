@@ -48,6 +48,7 @@ public class Main {
 		System.out.println("Server Receive started. Listening to the port 4444");
 		System.out.println("Server Send  started. Listening to the port 4445");
 
+		userTweetList.put("NearTweetStaff", "Welcome to NearTweet, enjoy!");
 		while (true) {
 			try {
 				clientSocket = serverSocketReceive.accept();
