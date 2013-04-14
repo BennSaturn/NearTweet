@@ -1,5 +1,10 @@
 package neartweet.neartweetclient;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ListActivity;
@@ -11,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 
 public class TweetListActivity extends ListActivity {
 
@@ -21,6 +27,7 @@ public class TweetListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tweetlist);	
 		// Show the Up button in the action bar.
+		new GetTweetsTask(this).execute("GETLIST:");
 		setupActionBar();
 		
 		 TweetBtn = (Button) findViewById(R.id.tweet);
@@ -33,7 +40,22 @@ public class TweetListActivity extends ListActivity {
          });
      }
 	
+	public void setTweetList(Map<String, String> tweetList){
+		if(tweetList != null){
+			setListAdapter(new TweetAdapter(this, getTweets(tweetList)));
+			//ListView listView = (ListView) findViewById(R.id.);
+			//listView.setAdapter(new TweetItemAdapter(this, R.layout.listitem, tweets));
+		}
+	}
 	
+	public static List<Tweet> getTweets(Map<String,String> list){
+		List<Tweet> tweetList = new ArrayList<Tweet>();
+		for(Entry<String, String> entry : list.entrySet()){
+			Tweet tweet = new Tweet(entry.getKey(), entry.getValue());
+			tweetList.add(tweet);
+		}
+		return tweetList;
+	}
 	
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
