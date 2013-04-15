@@ -47,7 +47,7 @@ public class Main {
 
 		System.out.println("Server Receive started. Listening to the port 4444");
 		System.out.println("Server Send started. Listening to the port 4445");
-		userTweetList.put("NearTweetStaff", "Welcome to NearTweet, enjoy!");
+		userTweetList.put("Welcome to NearTweet,enjoy!","NearTweetStaff");
 		while (true) {
 			try {
 				clientSocket = serverSocketReceive.accept();
@@ -67,6 +67,7 @@ public class Main {
 					login(port);
 					break;
 				case "TWEET" :
+					System.out.println("Tweet tweet");
 					tweet();
 					break;
 				case "REPLY" :
@@ -105,7 +106,8 @@ public class Main {
 	public static void login(Integer port){
 		userName = (String) message.subSequence(7, message.length());
 		System.out.println(userName+port+clientSocket.getLocalAddress());
-		listClients.put(userName, clientSocket.getLocalAddress()+"/"+port+"/0");
+		listClients.put(clientSocket.getLocalAddress().toString(), userName);
+		 /*+"/"+port+"/0" */
 		
 		try {
 			clientSocket = serverSocketSend.accept();
@@ -120,17 +122,29 @@ public class Main {
 	}
 
 	public static void tweet(){
+		String user = listClients.get(clientSocket.getLocalAddress().toString());
+		System.out.println("user:" + user);
 		tweet = (String) message.subSequence(7, message.length());
 		System.out.println(tweet);
 		// ver todos os portos/clientes existentes
-		String[] personTweet = tweet.split(":");
-		spamTweetList.put(personTweet[1], 0);;
-		userTweetList.put(personTweet[1], personTweet[0]);
-		for (String s :listClients.values()){
+		spamTweetList.put(tweet, 0);;
+		userTweetList.put(tweet, user);
+		try {
+			clientSocket = serverSocketSend.accept();
+			outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
+			outputStreamWriter.write("OK!");
+			outputStreamWriter.flush();
+			outputStreamWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	/*	for (String s :listClients.values()){
 			String[] portClient = s.split("/");
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
 			sendMsg(sendTweet, personTweet[1], endpoint);
-		}	
+		}	*/
 	}
 
 	public static void reply(){

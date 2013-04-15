@@ -1,10 +1,6 @@
 package neartweet.neartweetclient;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -17,8 +13,6 @@ import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
 
 public class TweetListActivity extends ListActivity {
 
@@ -34,7 +28,7 @@ public class TweetListActivity extends ListActivity {
 	}
 	
 	public void tweet(View v) {
-			Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
+		Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
 		startActivity(intent);
 		
 	}
@@ -47,7 +41,7 @@ public class TweetListActivity extends ListActivity {
 		if(tweetList != null){
 			setListAdapter(new TweetAdapter(this, tweetList));
 			//ListView listView = (ListView) findViewById(R.id.);
-			//listView.setAdapter(new TweetItemAdapter(this, R.layout.listitem, tweets));
+			//listView.setAdapte(new TweetItemAdapter(this, R.layout.listitem, tweets));
 		}
 		else {
 			nearTweetAlert("Servidor em baixo!");

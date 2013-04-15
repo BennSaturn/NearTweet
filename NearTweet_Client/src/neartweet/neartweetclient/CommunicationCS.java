@@ -75,6 +75,8 @@ public class CommunicationCS {
 		String[] resultSplit = null;
 		String[] usertweet = null;
 		String[] msgtweet = null;
+		String[] tweet = null;
+		int i = 0;
 		Tweet t;
 		System.out.println("Inicio dos sockets!!");
 		if(cliSend == 0){
@@ -111,14 +113,31 @@ public class CommunicationCS {
 			inputReader = new BufferedReader(new InputStreamReader(clientReceive.getInputStream()));
 			System.out.println(params);
 
-				if(inputReader != null ){
-					resultSplit = inputReader.readLine().split("\\{");
-					usertweet = resultSplit[1].split("=");
-					msgtweet = usertweet[1].split("\\}");
-					System.out.println(usertweet[0] + " " + msgtweet[0]);
-					t = new Tweet(usertweet[0],msgtweet[0]);
-					tweetlist.add(t);
+			if(inputReader != null ){
+				resultSplit = inputReader.readLine().split("\\{");
+				System.out.println("r[1]: " + resultSplit[1]);
+				usertweet = resultSplit[1].split("\\}");
+				if(usertweet.length == 1){
+					System.out.println("u[0]: " + usertweet[0]);
+					msgtweet = usertweet[0].split(", ");
+					if(msgtweet.length != 0){
+						System.out.println("msgtweet length: " + msgtweet.length);
+						System.out.println(msgtweet[0]);
+						tweetlist.clear();
+						while(msgtweet.length > i){
+							tweet = msgtweet[i].split("=");
+							t = new Tweet(tweet[1],tweet[0]);
+							tweetlist.add(t);
+							i++;
+						}	
+					} else {
+						tweet = usertweet[0].split("=");
+						t = new Tweet(tweet[1],tweet[0]);
+						tweetlist.add(t);
+					}
+
 				}
+			}
 
 			clientSend.close();
 			clientReceive.close();

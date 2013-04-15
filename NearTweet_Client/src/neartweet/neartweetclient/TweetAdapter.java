@@ -44,7 +44,7 @@ public class TweetAdapter extends BaseAdapter {
         if ( v == null )
         {
                 LayoutInflater vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = vi.inflate(R.layout.tweets, null);
+                v = vi.inflate(R.layout.tweet_item, null);
         }
 
         Tweet tweet = (Tweet) getItem(position);

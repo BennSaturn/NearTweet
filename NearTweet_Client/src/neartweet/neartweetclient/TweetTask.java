@@ -1,21 +1,15 @@
 package neartweet.neartweetclient;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
-public class GetTweetsTask extends AsyncTask<String, String, List<Tweet>>{
+public class TweetTask extends AsyncTask<String, String, String>{
 
 	private ProgressDialog progress;
-	private TweetListActivity context;
-	private List<Tweet> objectInput = new ArrayList<Tweet>();
+	private TweetActivity context;
+	private String tweetResult;
 	
-	public GetTweetsTask(TweetListActivity context) {
+	public TweetTask(TweetActivity context) {
 		this.context = context;
 	}
 
@@ -23,12 +17,12 @@ public class GetTweetsTask extends AsyncTask<String, String, List<Tweet>>{
 	protected void onPreExecute() {
 		//Cria novo um ProgressDialogo e exibe
 		progress = new ProgressDialog(context);
-		progress.setMessage("A carregar tweets...");
+		progress.setMessage("A enviar tweet....");
 		progress.show();
 	}
 
 	@Override
-	protected List<Tweet> doInBackground(String... params) {
+	protected String doInBackground(String... params) {
 
 		System.out.println("doInBackground!!!!!!!");
 		// validate input parameters
@@ -46,12 +40,7 @@ public class GetTweetsTask extends AsyncTask<String, String, List<Tweet>>{
 
 		// connect to the server and send the message
 			System.out.println("params[0]: " + params[0]);
-			
-			if(objectInput.size() > 0) {
-				System.out.println(objectInput.size());
-				objectInput.clear();
-			}
-			objectInput = CommunicationCS.obtainInfo2(params[0]);
+			tweetResult = CommunicationCS.obtainInfo(params[0]);
 			//int init = (int) System.currentTimeMillis();
 			//System.out.println(init);
 			int time = 0;
@@ -60,21 +49,21 @@ public class GetTweetsTask extends AsyncTask<String, String, List<Tweet>>{
 				//time += (int) (System.currentTimeMillis() - init);
 				time ++;
 				System.out.println(time);
-				if (objectInput != null){
+				if (tweetResult != null){
 					//clientReceive.close();
-					System.out.println("GetTweetsTask: "+objectInput.toString());
-					return objectInput;
+					System.out.println("TweetTask: "+ tweetResult);
+					return tweetResult;
 				}
 			}
-		return objectInput;
+		return tweetResult;
 	}
 
 	@Override
-	protected void onPostExecute(List<Tweet> result) {
+	protected void onPostExecute(String result) {
 		//Cancela progressDialogo e envia resultado
 		System.out.println("onPostExecute!!!!!!!");
 		progress.dismiss();
-		context.setTweetList(result);
+		context.setResult(result);
 		
 	}
 
