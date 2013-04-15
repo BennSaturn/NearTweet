@@ -34,25 +34,25 @@
         android:columnCount="1" >
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/reply"
             android:layout_column="0"
             android:layout_gravity="left|top"
             android:layout_row="0"
-            android:text="Reply" />
+            android:text="@string/reply" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/retweet"
             android:layout_column="0"
             android:layout_gravity="center_horizontal|top"
             android:layout_row="0"
-            android:text="Retweet" />
+            android:text="@string/retweet" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/spam"
             android:layout_column="0"
             android:layout_gravity="right|top"
             android:layout_row="0"
-            android:text="Spam" />
+            android:text="@string/spam" />
 
     </GridLayout>
 

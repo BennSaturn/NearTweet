@@ -18,9 +18,6 @@ import android.widget.Toast;
 public class TweetActivity extends Activity {
 
 	@SuppressLint("NewApi")
-
-	private Button PicBtn;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,36 +25,42 @@ public class TweetActivity extends Activity {
 		// Show the Up button in the action bar.
 		setupActionBar();
 
-		PicBtn = (Button) findViewById(R.id.button1);
+	}
+	
+	/** OnClick Photo button */
+	public void photoPopUp(View v) {
+		/** Instantiating PopupMenu class */
+		PopupMenu popup = new PopupMenu(getBaseContext(), v);
 
-		OnClickListener listener = new OnClickListener() {
+		/** Adding menu items to the popumenu */
+		popup.getMenuInflater().inflate(R.menu.popuppicmenu, popup.getMenu());
+
+		/** Defining menu item click listener for the popup menu */
+		popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				/** Instantiating PopupMenu class */
-				PopupMenu popup = new PopupMenu(getBaseContext(), v);
-
-				/** Adding menu items to the popumenu */
-				popup.getMenuInflater().inflate(R.menu.popuppicmenu, popup.getMenu());
-
-				/** Defining menu item click listener for the popup menu */
-				popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
-					@Override
-					public boolean onMenuItemClick(MenuItem item) {
-						Toast.makeText(getBaseContext(), "You selected the action : " + item.getTitle(), 
-								Toast.LENGTH_SHORT).show();
-						return true;
-					}
-				});
-
-				/** Showing the popup menu */
-				popup.show();
-
+			public boolean onMenuItemClick(MenuItem item) {
+				Toast.makeText(getBaseContext(), "You selected the action : " + item.getTitle(), 
+						Toast.LENGTH_SHORT).show();
+				return true;
 			}
-		};
-		PicBtn.setOnClickListener(listener);
+		});
+
+		/** Showing the popup menu */
+		popup.show();
+
 	}
+	
+	/** OnClick Gps button */
+	public void getGpsData(View v) {
+		
+	}
+	
+	/** OnClick Send Tweet button */
+	public void sendTweet(View v) {
+		
+	}
+	
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */

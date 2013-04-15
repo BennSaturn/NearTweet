@@ -12,21 +12,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".TweetListActivity" >
 
-    <TextView
-        android:id="@+id/tweetUsername"
-        android:layout_gravity="left"
-        android:text="@string/profilename"
-        android:textSize="16sp" >
-    </TextView>
-
-    <TextView
-        android:id="@+id/tweetMessage"
-        android:layout_column="0"
-        android:layout_gravity="left"
-        android:minLines="5"
-        android:textSize="14sp" >
-    </TextView>
-
     <Space
         android:layout_column="1"
         android:layout_gravity="fill_vertical"
@@ -49,27 +34,31 @@
     <!-- android:drawableCenter="@drawable/gps" -->
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/photo"
         android:layout_width="113dp"
         android:layout_column="0"
         android:layout_gravity="left|top"
         android:layout_row="2"
-        android:onClick="popup"
-        android:text="Photo" />
+        android:onClick="photoPopUp"
+        android:text="@string/photo" />
    <!--  android:drawableTop="@drawable/photo"  -->
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/gps"
         android:layout_column="0"
         android:layout_gravity="center_horizontal|top"
         android:layout_row="2"
-        android:text="GPS" />
+        android:onClick="getGpsData"
+        android:text="@string/gps" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/sendtweet"
         android:layout_column="0"
         android:layout_gravity="right|top"
         android:layout_row="2"
-        android:text="SendTweet" />
+        android:onClick="sendtweet"
+        android:text="@string/sendtweet" />
+
+
 
 </GridLayout>

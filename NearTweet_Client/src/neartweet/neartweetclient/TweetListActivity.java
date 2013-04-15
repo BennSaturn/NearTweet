@@ -23,7 +23,6 @@ import android.widget.ListView;
 public class TweetListActivity extends ListActivity {
 
 	@SuppressLint("NewApi")
-	private Button TweetBtn;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,15 +31,17 @@ public class TweetListActivity extends ListActivity {
 		new GetTweetsTask(this).execute("GETLIST:");
 		setupActionBar();
 		
-		 TweetBtn = (Button) findViewById(R.id.tweet);
-         TweetBtn.setOnClickListener(new View.OnClickListener() {
+	}
+	
+	public void tweet(View v) {
+			Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
+		startActivity(intent);
+		
+	}
 
-             public void onClick(View v) {
-     			Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
-    			startActivity(intent);
-             }
-         });
-     }
+	public void refresh(View v) {
+		new GetTweetsTask(this).execute("GETLIST:"); 
+	}
 	
 	public void setTweetList(List<Tweet> tweetList){
 		if(tweetList != null){
