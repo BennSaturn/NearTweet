@@ -3,7 +3,6 @@ package neartweet.neartweetclient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -75,7 +74,8 @@ public class CommunicationCS {
 		String[] resultSplit = null;
 		String[] usertweet = null;
 		String[] msgtweet = null;
-		String[] tweet = null;
+		String[] t1 = null;
+		String[] t2 = null;
 		int i = 0;
 		Tweet t;
 		System.out.println("Inicio dos sockets!!");
@@ -125,15 +125,17 @@ public class CommunicationCS {
 						System.out.println(msgtweet[0]);
 						tweetlist.clear();
 						while(msgtweet.length > i){
-							tweet = msgtweet[i].split("=");
-							t = new Tweet(tweet[1],tweet[0]);
-							tweetlist.add(t);
+							t1 = msgtweet[i].split("=");
+							t2 = t1[1].split(" - ");
+							t = new Tweet(t2[0],t2[1]);
+							tweetlist.add(0,t);
 							i++;
 						}	
 					} else {
-						tweet = usertweet[0].split("=");
-						t = new Tweet(tweet[1],tweet[0]);
-						tweetlist.add(t);
+						t1 = msgtweet[i].split("=");
+						t2 = t1[1].split(" - ");
+						t = new Tweet(t2[0],t2[1]);
+						tweetlist.add(0,t);
 					}
 
 				}

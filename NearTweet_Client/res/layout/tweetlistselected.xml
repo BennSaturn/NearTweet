@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -22,10 +23,12 @@
 
     <!-- alterar para em vez da lista aparecer o comment da pessoa e as respostas recebidas -->
     <!-- esta nova lista é a lista do tweet e das respostas ao mesmo -->
+
     <ListView
         android:id="@android:id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="378dp" >
+        android:layout_width="wrap_content"
+        android:layout_height="439dp"
+        tools:listitem="@android:layout/simple_list_item_2" >
     </ListView>
 
     <GridLayout
@@ -36,24 +39,23 @@
         <Button
             android:id="@+id/reply"
             android:layout_column="0"
-            android:layout_gravity="left|top"
+            android:layout_gravity="left|bottom"
             android:layout_row="0"
             android:text="@string/reply" />
 
         <Button
             android:id="@+id/retweet"
             android:layout_column="0"
-            android:layout_gravity="center_horizontal|top"
+            android:layout_gravity="center_horizontal|bottom"
             android:layout_row="0"
             android:text="@string/retweet" />
 
         <Button
             android:id="@+id/spam"
             android:layout_column="0"
-            android:layout_gravity="right|top"
+            android:layout_gravity="right|bottom"
             android:layout_row="0"
             android:text="@string/spam" />
-
     </GridLayout>
 
 </LinearLayout>

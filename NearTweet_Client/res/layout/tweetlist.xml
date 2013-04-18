@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -10,9 +11,9 @@
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:gravity="center_vertical"
             android:paddingLeft="10dip"
             android:text="@string/tweets"
@@ -22,8 +23,10 @@
 
     <ListView
         android:id="@android:id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="378dp" >
+        android:layout_width="wrap_content"
+        android:layout_height="440dp"
+        android:layout_gravity="center_vertical"
+        tools:listitem="@android:layout/simple_list_item_2" >
     </ListView>
 
     <GridLayout
@@ -35,7 +38,7 @@
             android:id="@+id/tweet"
             android:layout_width="145dp"
             android:layout_column="0"
-            android:layout_gravity="left|top"
+            android:layout_gravity="left|bottom"
             android:layout_row="0"
             android:onClick="tweet"
             android:text="@string/tweet" />
@@ -44,11 +47,10 @@
             android:id="@+id/refresh"
             android:layout_width="145dp"
             android:layout_column="0"
-            android:layout_gravity="right|top"
+            android:layout_gravity="right|bottom"
             android:layout_row="0"
             android:onClick="refresh"
             android:text="@string/refresh" />
-
     </GridLayout>
 
 </LinearLayout>

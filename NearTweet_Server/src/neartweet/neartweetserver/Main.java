@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Main {
 
@@ -31,10 +32,9 @@ public class Main {
 	private static String spam;
 	private static Map<String, String> listClients = new HashMap<String, String>();
 	private static Map<String, Integer> spamTweetList = new HashMap<String, Integer>();
-	private static Map<String, String> userTweetList = new HashMap<String, String>();
+	private static Map<String, String> userTweetList = new TreeMap<String, String>();
 	private static int spamValue;
 	private static int banValue = 10;
-	private static Integer port = null;
 
 	public static void main(String[] args) {
 
@@ -47,12 +47,11 @@ public class Main {
 
 		System.out.println("Server Receive started. Listening to the port 4444");
 		System.out.println("Server Send started. Listening to the port 4445");
-		userTweetList.put("Welcome to NearTweet,enjoy!","NearTweetStaff");
+		Long startTime = System.currentTimeMillis();
+		userTweetList.put(startTime.toString(),"NearTweetStaff - Welcome to NearTweet,enjoy!");
 		while (true) {
 			try {
 				clientSocket = serverSocketReceive.accept();
-				port = clientSocket.getPort();
-
 				inputStreamReader =
 						new InputStreamReader(clientSocket.getInputStream());
 				bufferedReader =
@@ -64,10 +63,9 @@ public class Main {
 			}		
 				switch(operation[0]){ 
 				case "LOGIN" :
-					login(port);
+					login();
 					break;
 				case "TWEET" :
-					System.out.println("Tweet tweet");
 					tweet();
 					break;
 				case "REPLY" :
@@ -103,10 +101,10 @@ public class Main {
 		}
 	}
 
-	public static void login(Integer port){
+	public static void login(){
 		userName = (String) message.subSequence(7, message.length());
-		System.out.println(userName+port+clientSocket.getLocalAddress());
-		listClients.put(clientSocket.getLocalAddress().toString(), userName);
+		System.out.println(userName+" "+clientSocket.getLocalAddress().getHostAddress());
+		listClients.put(clientSocket.getLocalAddress().getHostAddress(), userName + " : " + 0);
 		 /*+"/"+port+"/0" */
 		
 		try {
@@ -122,13 +120,15 @@ public class Main {
 	}
 
 	public static void tweet(){
-		String user = listClients.get(clientSocket.getLocalAddress().toString());
+		String user = listClients.get(clientSocket.getLocalAddress().getHostAddress());
 		System.out.println("user:" + user);
+		user = user.substring(0, user.length() - 3);
 		tweet = (String) message.subSequence(7, message.length());
 		System.out.println(tweet);
 		// ver todos os portos/clientes existentes
-		spamTweetList.put(tweet, 0);;
-		userTweetList.put(tweet, user);
+		Long tweetTime = System.currentTimeMillis();
+		spamTweetList.put(user + " - " + tweet, 0);
+		userTweetList.put(tweetTime.toString(), user + " - " + tweet);
 		try {
 			clientSocket = serverSocketSend.accept();
 			outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
