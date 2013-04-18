@@ -14,7 +14,7 @@ public class MainActivity extends Activity {
 
 	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
 	private EditText enter_usernameTx;
-	private String message;
+	private static String message;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,4 +68,8 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
+	public static String getUsername(){
+		return message;
+		
+	}
 }
