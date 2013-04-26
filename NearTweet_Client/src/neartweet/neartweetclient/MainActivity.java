@@ -2,9 +2,11 @@ package neartweet.neartweetclient;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -14,7 +16,8 @@ public class MainActivity extends Activity {
 
 	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
 	private EditText enter_usernameTx;
-	private static String message;
+	private String message;
+	private String port;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,13 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		enter_usernameTx = (EditText) findViewById(R.id.enter_usernameTx);
 
+		/** define port **/
+		final TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+		String deviceMobileNo = tm.getLine1Number();
+		System.out.println("deviceMobileNo: " + deviceMobileNo);
+		String substring = deviceMobileNo.length() > 2 ? deviceMobileNo.substring(deviceMobileNo.length() - 2) : deviceMobileNo;
+		port = "90"+substring;
+		
 	}
 
 	public void loginResponse(View view){
@@ -34,7 +44,7 @@ public class MainActivity extends Activity {
 		}
 		message = enter_usernameTx.getText().toString();
 		enter_usernameTx.setText("");
-		new LoginResponseTask(this).execute("LOGIN: "+ message);
+		new LoginResponseTask(this).execute("LOGIN:"+ message +":"+port);
 		//new ClientConnectorTask().execute("LOGIN:"+ message);
 	}
 
@@ -68,7 +78,7 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	public static String getUsername(){
+	public String getUsername(){
 		return message;
 		
 	}

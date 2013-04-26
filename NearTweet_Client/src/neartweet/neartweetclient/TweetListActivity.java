@@ -15,6 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class TweetListActivity extends ListActivity {
+	
+	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
+	private String userName;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -25,16 +28,22 @@ public class TweetListActivity extends ListActivity {
 		new GetTweetsTask(this).execute("GETLIST:");
 		setupActionBar();
 		
+		/** vai buscar o extra que passas no intent **/
+		Bundle extras = getIntent().getExtras();
+		userName = extras.getString("USERNAME");
+		System.out.println("TweetListActivity: "+userName);
+		
 	}
 	
 	public void tweet(View v) {
 		Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
+		intent.putExtra(USERNAME, userName);
 		startActivity(intent);
 		
 	}
 
 	public void refresh(View v) {
-		new GetTweetsTask(this).execute("GETLIST:"); 
+		new GetTweetsTask(this).execute("GETLIST:"+userName); 
 	}
 	
 	public void setTweetList(List<Tweet> tweetList){

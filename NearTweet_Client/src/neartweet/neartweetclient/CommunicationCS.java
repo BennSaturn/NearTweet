@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -23,6 +24,17 @@ public class CommunicationCS {
 	private static int cliReceive = 0;
 	private static String result;
 	private static List<Tweet> tweetlist = new ArrayList<Tweet>();
+	private static ServerSocket serverSocketReceive;
+	private static int port;
+	
+	public static void initServerSocketReceive() {
+		try {
+			serverSocketReceive = new ServerSocket(6000);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	public static String obtainInfo(String params) {
 		System.out.println("Inicio dos sockets!!");
@@ -39,23 +51,16 @@ public class CommunicationCS {
 			}
 		}
 		System.out.println("Client closed? " + clientSend.isClosed());
-		if(cliReceive == 0){
-			try {
-				clientReceive = new Socket("10.0.2.2", 4445);
-				cliReceive = 1;
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		System.out.println("Client closed? " + clientReceive.isClosed());
+		
 		try {
 			printwriter = new PrintWriter(clientSend.getOutputStream(),true);
 			printwriter.write(params);
 			printwriter.close();
+			if(cliReceive == 0){
+				clientReceive = serverSocketReceive.accept();
+				cliReceive = 1;
+			}
+			System.out.println("Client closed? " + clientReceive.isClosed());
 			inputReader = new BufferedReader(new InputStreamReader(clientReceive.getInputStream()));
 			result = inputReader.readLine();			
 			clientSend.close();
@@ -92,24 +97,19 @@ public class CommunicationCS {
 			}
 		}
 		System.out.println("Client closed? " + clientSend.isClosed());
-		if(cliReceive == 0){
-			try {
-				clientReceive = new Socket("10.0.2.2", 4445);
-				cliReceive = 1;
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		System.out.println("Client closed? " + clientReceive.isClosed());
+		
 		try {
 			printwriter = new PrintWriter(clientSend.getOutputStream());
 			printwriter.write(params);
 			printwriter.flush();      
 			printwriter.close();
+			
+			if(cliReceive == 0){
+				clientReceive = serverSocketReceive.accept();
+				cliReceive = 1;
+			}
+			System.out.println("Client closed? " + clientReceive.isClosed());
+			
 			inputReader = new BufferedReader(new InputStreamReader(clientReceive.getInputStream()));
 			System.out.println(params);
 

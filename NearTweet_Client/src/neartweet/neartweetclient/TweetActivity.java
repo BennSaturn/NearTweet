@@ -33,6 +33,7 @@ public class TweetActivity extends Activity {
 	private static final int SELECT_PHOTO = 100;
 	private static final int PHOTO_TAKEN = 0;
 	private static String url = "";
+	private String userName;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -41,7 +42,11 @@ public class TweetActivity extends Activity {
 		setContentView(R.layout.tweets);	
 		// Show the Up button in the action bar.
 		setupActionBar();
-
+		
+		/** vai buscar o extra que passas no intent **/
+		Bundle extras = getIntent().getExtras();
+		userName = extras.getString("USERNAME");
+		System.out.println("TweetListActivity: "+userName);
 	}
 
 	/** OnClick Photo button */
@@ -142,7 +147,7 @@ public class TweetActivity extends Activity {
 	/** OnClick Send Tweet button */
 	public void sendtweet(View v) {
 		EditText tweet = (EditText) findViewById(R.id.editText1);
-		new TweetTask(this).execute("TWEET:" + MainActivity.getUsername() + " - " + tweet.getText().toString());		
+		new TweetTask(this).execute("TWEET:" + userName + " - " + tweet.getText().toString());		
 
 	}
 
