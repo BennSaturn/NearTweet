@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
 		System.out.println("deviceMobileNo: " + deviceMobileNo);
 		String substring = deviceMobileNo.length() > 2 ? deviceMobileNo.substring(deviceMobileNo.length() - 2) : deviceMobileNo;
 		port = "90"+substring;
+		CommunicationCS.initServerSocketReceive();
 		
 	}
 
@@ -54,6 +55,7 @@ public class MainActivity extends Activity {
 		
 		if(result.equals("OK!")){
 			Intent intent = new Intent(this, TweetListActivity.class);
+			System.out.println("Intent extra: "+ message);
 			intent.putExtra(USERNAME, message);
 			startActivity(intent);
 		} else if(result.equals("EXISTE!")){

@@ -48,7 +48,7 @@ public class Main {
 		}
 
 		System.out.println("Server Receive started. Listening to the port 4444");
-		System.out.println("Server Send started. Listening to the port 4445");
+		//System.out.println("Server Send started. Listening to the port 4445");
 		Long startTime = System.currentTimeMillis();
 		userTweetList.put(startTime.toString(),"NearTweetStaff - Welcome to NearTweet,enjoy!");
 		while (true) {
@@ -60,7 +60,10 @@ public class Main {
 						new BufferedReader(inputStreamReader);
 				message = bufferedReader.readLine();
 				operation = message.split(":");
-				System.out.println(operation.toString());
+				//System.out.println(operation.length);
+				//System.out.println(operation[0]);
+				//System.out.println(operation[1]);
+				//System.out.println(operation[2]);
 
 			} catch (IOException ex) {
 				System.out.println("Problem in message reading");
@@ -108,6 +111,7 @@ public class Main {
 	public static void login(String username, int port){
 		//userName = (String) message.subSequence(7, message.length());
 		System.out.println(username);
+		System.out.println(port);
 		listClients.put(username, port);
 		/*+"/"+port+"/0" */
 
@@ -263,6 +267,7 @@ public class Main {
 		//	}  	
 
 		int port = listClients.get(username);
+		//System.out.println(port);
 		try {
 			clientSocket = new Socket("127.0.0.1", port);
 			outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());

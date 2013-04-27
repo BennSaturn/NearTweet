@@ -25,14 +25,12 @@ public class TweetListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tweetlist);	
 		// Show the Up button in the action bar.
-		new GetTweetsTask(this).execute("GETLIST:");
 		setupActionBar();
-		
 		/** vai buscar o extra que passas no intent **/
 		Bundle extras = getIntent().getExtras();
-		userName = extras.getString("USERNAME");
-		System.out.println("TweetListActivity: "+userName);
-		
+		userName = extras.getString(USERNAME);
+		//System.out.println("TweetListActivity: "+userName);
+		new GetTweetsTask(this).execute("GETLIST:"+userName);
 	}
 	
 	public void tweet(View v) {

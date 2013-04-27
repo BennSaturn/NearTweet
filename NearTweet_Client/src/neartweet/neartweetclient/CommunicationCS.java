@@ -58,6 +58,7 @@ public class CommunicationCS {
 			printwriter.close();
 			if(cliReceive == 0){
 				clientReceive = serverSocketReceive.accept();
+				System.out.println("ligado!");
 				cliReceive = 1;
 			}
 			System.out.println("Client closed? " + clientReceive.isClosed());
