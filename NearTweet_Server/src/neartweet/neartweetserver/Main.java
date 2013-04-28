@@ -136,6 +136,7 @@ public class Main {
 			tweetTime = System.currentTimeMillis();
 			spamTweetList.put(tweet[0] + " - " + tweet[1], 0);
 			userTweetList.put(tweetTime.toString(), tweet[0] + " - " + tweet[1]);
+			System.out.println(tweet[0]+"-"+tweet[1]);
 		}
 
 		Thread sendTweet = new Thread() {
@@ -144,6 +145,7 @@ public class Main {
 					for (int port : listClients.values()){
 						try {
 							clientSocket = new Socket("127.0.0.1", port);
+							outputStreamWriter = new OutputStreamWriter(clientSocket.getOutputStream());
 							outputStreamWriter.write((String.valueOf(tweetTime))+tweet[0] + " - " + tweet[1]);
 							outputStreamWriter.flush();
 							outputStreamWriter.close();

@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 public class TweetActivity extends Activity {
 
+	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
 	private static final int SELECT_PHOTO = 100;
 	private static final int PHOTO_TAKEN = 0;
 	private static String url = "";
@@ -45,8 +46,8 @@ public class TweetActivity extends Activity {
 		
 		/** vai buscar o extra que passas no intent **/
 		Bundle extras = getIntent().getExtras();
-		userName = extras.getString("USERNAME");
-		System.out.println("TweetListActivity: "+userName);
+		userName = extras.getString(USERNAME);
+		System.out.println("TweetActivity: "+userName);
 	}
 
 	/** OnClick Photo button */
@@ -148,7 +149,6 @@ public class TweetActivity extends Activity {
 	public void sendtweet(View v) {
 		EditText tweet = (EditText) findViewById(R.id.editText1);
 		new TweetTask(this).execute("TWEET:" + userName + " - " + tweet.getText().toString());		
-
 	}
 
 	public void setResult(String result){
