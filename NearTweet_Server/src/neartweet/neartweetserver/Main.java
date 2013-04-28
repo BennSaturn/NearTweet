@@ -112,6 +112,17 @@ public class Main {
 		//userName = (String) message.subSequence(7, message.length());
 		System.out.println(username);
 		System.out.println(port);
+		
+		
+		//Falta avisar o utilizador...
+		if(listClients.containsKey(username)){
+			System.out.println("User already exists!");
+			return;
+		}else if( spamTweetList.containsKey(username)){
+			System.out.println("User blocked over spam!");
+			return;
+		}
+			
 		listClients.put(username, port);
 		/*+"/"+port+"/0" */
 
@@ -241,7 +252,7 @@ public class Main {
 
 		if(spamValue == banValue){
 			userTweetList.remove(spam);
-			/*		String bannedUser[] = listClients.get(userName).split("/");
+			/* String bannedUser[] = listClients.get(userName).split("/");
 			// informacao para o utilizador a banir
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(bannedUser[2]));
 			sendMsg(banUser, "BANNED!", endpoint);
