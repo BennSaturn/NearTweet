@@ -1,6 +1,8 @@
 package neartweet.neartweetclient;
 
 import java.util.List;
+
+import android.R.id;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -13,6 +15,13 @@ import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.PopupMenu;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.ListView;
 
 public class TweetListActivity extends ListActivity {
 
@@ -26,7 +35,6 @@ public class TweetListActivity extends ListActivity {
 		setContentView(R.layout.tweetlist);	
 		// Show the Up button in the action bar.
 		setupActionBar();
-		System.out.println(userName);
 		/** vai buscar o extra que passas no intent **/
 		Bundle extras = getIntent().getExtras();
 		userName = extras.getString(USERNAME);
@@ -47,11 +55,72 @@ public class TweetListActivity extends ListActivity {
 	public void refresh(View v) {
 		new GetTweetsTask(this).execute("GETLIST:"+userName); 
 	}
+	
+	private OnItemClickListener quickMessageClickedHandler = new OnItemClickListener() {
+	    public void onItemClick(AdapterView parent, View v, int position, long id) {
+	    	Intent intent = new Intent(TweetListActivity.this, TweetSelectedActivity.class);
+			intent.putExtra(USERNAME, userName);
+			startActivity(intent);
+	    }
+	};
+	
+	private OnItemLongClickListener longMessageClickedHandler = new OnItemLongClickListener() {
+	    public boolean onItemLongClick(AdapterView<?> parent, View v,
+				int position, long id) {
+	    	
+	    	PopupMenu popup = new PopupMenu(getBaseContext(), v);
+
+			/** Adding menu items to the popumenu */
+			popup.getMenuInflater().inflate(R.menu.popuptweetmenu, popup.getMenu());
+
+			/** Defining menu item click listener for the popup menu */
+			popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+				@Override
+				public boolean onMenuItemClick(MenuItem item) {
+					if(item.getTitle().equals("Reply")){
+						
+						Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
+						intent.putExtra(USERNAME, userName);
+					//condição para decidir se é pessoal ou púbico
+						startActivity(intent);
+						
+					} else if (item.getTitle().equals("ReTweet")){
+
+					//falta agarrar ao facebook para mandar o tweet
+
+					} else if (item.getTitle().equals("SPAM")){
+						
+					//	marcar o tweet como spam para o servidor...
+						
+					}
+					return true;
+				}
+				
+			});
+			
+
+			/** Showing the popup menu */
+			popup.show();
+			return true;
+	    }
+	};
+	
 
 	public void setTweetList(List<Tweet> tweetList){
 		if(tweetList != null){
 			setListAdapter(new TweetAdapter(this, tweetList));
-			//ListView listView = (ListView) findViewById(R.id.);
+			
+			ListView listView = (ListView) findViewById(android.R.id.list);
+			
+			
+			listView.setLongClickable(true);
+			listView.setOnItemLongClickListener(longMessageClickedHandler);
+			
+			listView.setOnItemClickListener(quickMessageClickedHandler);
+			
+			
+			
 			//listView.setAdapte(new TweetItemAdapter(this, R.layout.listitem, tweets));
 		}
 		else {

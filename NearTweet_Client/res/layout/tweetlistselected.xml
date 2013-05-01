@@ -16,7 +16,7 @@
             android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
             android:paddingLeft="10dip"
-            android:text="@string/tweets"
+            android:text="@string/tweetselected"
             android:textSize="28sp" >
         </TextView>
     </RelativeLayout>

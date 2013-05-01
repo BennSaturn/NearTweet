@@ -1,25 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
-    <string name="app_name">NearTweet</string>
-    <string name="action_settings">Settings</string>
-    <string name="username">User Name: </string>
-    <string name="login">Login</string>
-    <string name="empty"></string>
-    <string name="title_activity_tweetlist">NearTweet</string>
-    <string name="profilename">Profile Name</string>
-    <string name="tweets">Tweets</string>
-    <string name="logout">Logout</string>
-    <string name="poll">Poll</string>
-    <string name="title_activity_tweet">NearTweet</string>
-    <string name="tweet">Tweet</string>
-    <string name="refresh">Refresh</string>
-    <string name="photo">Photo</string>
-    <string name="gps">GPS</string>
-    <string name="sendtweet">SendTweet</string>
-    <string name="reply">Reply</string>
-    <string name="retweet">Retweet</string>
-    <string name="spam">Spam</string>
-    
+
+    <string name="app_name" >NearTweet
+    </string>
+
+    <string name="action_settings" >Settings
+    </string>
+
+    <string name="username" >User Name: 
+    </string>
+
+    <string name="login" >Login
+    </string>
+
+    <string name="empty" ></string>
+
+    <string name="title_activity_tweetlist" >NearTweet
+    </string>
+
+    <string name="profilename" >Profile Name
+    </string>
+
+    <string name="tweets" >Tweets
+    </string>
+
+    <string name="logout" >Logout
+    </string>
+
+    <string name="poll" >Poll
+    </string>
+
+    <string name="title_activity_tweet" >NearTweet
+    </string>
+
+    <string name="tweet" >Tweet
+    </string>
+
+    <string name="refresh" >Refresh
+    </string>
+
+    <string name="photo" >Photo
+    </string>
+
+    <string name="gps" >GPS
+    </string>
+
+    <string name="sendtweet" >SendTweet
+    </string>
+
+    <string name="reply" >Reply
+    </string>
+
+    <string name="retweet" >Retweet
+    </string>
+
+    <string name="spam" >Spam
+    </string>
+
+    <string name="tweetselected" >Tweet Selected
+    </string>
+    <string name="tweetlist">tweetlist</string>
 
 </resources>
