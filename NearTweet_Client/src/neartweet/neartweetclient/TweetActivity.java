@@ -35,6 +35,8 @@ public class TweetActivity extends Activity {
 	private static final int PHOTO_TAKEN = 0;
 	private static String url = "";
 	private String userName;
+	private String gpsInfo = "";
+	private String photoInfo = "";
 
 	@SuppressLint("NewApi")
 	@Override
@@ -63,8 +65,6 @@ public class TweetActivity extends Activity {
 
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
-				//Toast.makeText(getBaseContext(), "You selected the action : " + item.getTitle(), 
-				//  		Toast.LENGTH_SHORT).show();
 				if(item.getTitle().equals("From Clipboard")){
 					Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
 					photoPickerIntent.setType("image/*");
@@ -99,6 +99,7 @@ public class TweetActivity extends Activity {
 				try {
 					imageStream = getContentResolver().openInputStream(selectedImage);
 					yourSelectedImage = BitmapFactory.decodeStream(imageStream);
+					photoInfo = yourSelectedImage.toString();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -112,6 +113,7 @@ public class TweetActivity extends Activity {
 				try {
 					imageStream = getContentResolver().openInputStream(selectedImage);
 					yourSelectedImage = BitmapFactory.decodeStream(imageStream);
+					photoInfo = yourSelectedImage.toString();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -132,7 +134,8 @@ public class TweetActivity extends Activity {
 		if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {  
 			if(MyLocationListener.latitude>0){  
 				Toast.makeText(getBaseContext(), "Latitude: " + MyLocationListener.latitude + '\n' + 
-						"Longitude: " + MyLocationListener.longitude + '\n', Toast.LENGTH_SHORT).show(); 
+						"Longitude: " + MyLocationListener.longitude + '\n', Toast.LENGTH_SHORT).show();
+				gpsInfo = "Latitude: " + MyLocationListener.latitude + " Longitude: " + MyLocationListener.longitude;
 			} else {  
 				alert.setTitle("Wait");  
 				alert.setMessage("GPS in progress, please wait.");    
@@ -148,7 +151,7 @@ public class TweetActivity extends Activity {
 	/** OnClick Send Tweet button */
 	public void sendtweet(View v) {
 		EditText tweet = (EditText) findViewById(R.id.editText1);
-		new TweetTask(this).execute("TWEET:" + userName + " - " + tweet.getText().toString());		
+		new TweetTask(this).execute("TWEET:" + userName + " - " + tweet.getText().toString() + " " + gpsInfo + " " + photoInfo);		
 	}
 
 	public void setResult(String result){

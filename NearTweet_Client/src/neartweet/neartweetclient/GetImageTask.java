@@ -1,7 +1,5 @@
 package neartweet.neartweetclient;
 
-import java.util.List;
-
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
@@ -44,8 +42,7 @@ public class GetImageTask extends AsyncTask<String,String,String>{
 
 		// connect to the server and send the message
 			System.out.println("params[0]: " + params[0]);
-			ImageDownloader.DownloadFromUrl(params[0], "Image000" + numImage+".jpg");
-			
+			ImageDownloader.DownloadFromUrl(params[0], "Image000" + numImage+".jpg");		
 			int time = 0;
 			long timeout = 100;
 			while (time<timeout){
@@ -53,7 +50,7 @@ public class GetImageTask extends AsyncTask<String,String,String>{
 				time ++;
 				System.out.println(time);
 			}
-		result = "OK!";
+		result = "OK! : Image000"+ numImage +".jpg";
 		return result;
 	}
 	

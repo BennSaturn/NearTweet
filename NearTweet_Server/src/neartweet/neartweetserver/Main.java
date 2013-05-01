@@ -85,12 +85,6 @@ public class Main {
 			case "POLL" :
 				poll();
 				break;
-			case "MSHARING" :
-				mdsharing();
-				break;
-			case "SDSHARING" :
-				sdsharing();
-				break;
 			case "SPAM" :
 				spam(operation[1]);		
 				break;
@@ -234,30 +228,6 @@ public class Main {
 			String[] portClient = s.split("/");
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
 			sendMsg(sendTweet, poll, endpoint);
-		} */
-	}
-
-	public static void mdsharing(){
-		sharing = (String) message.subSequence(10, message.length());
-		System.out.println(sharing);
-		spamTweetList.put(sharing, 0);
-		userTweetList.put(sharing, userName);
-		/*		for (String s :listClients.values()){
-			String[] portClient = s.split("/");
-			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-			sendMsg(sendTweet, sharing, endpoint);
-		} */
-	}
-
-	public static void sdsharing(){
-		sharing = (String) message.subSequence(11, message.length());
-		System.out.println(sharing);
-		spamTweetList.put(sharing, 0);
-		userTweetList.put(sharing, userName);
-		/*		for (String s :listClients.values()){
-			String[] portClient = s.split("/");
-			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-			sendMsg(sendTweet, sharing, endpoint);
 		} */
 	}
 
