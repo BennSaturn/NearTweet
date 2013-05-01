@@ -156,7 +156,10 @@ public class TweetActivity extends Activity {
 		System.out.println("TweetActivity: "+ result);
 
 		if(result.equals("OK!")){
-			NavUtils.navigateUpFromSameTask(this);
+			Intent intent = new Intent(this, TweetListActivity.class);
+			intent.putExtra(USERNAME, userName);
+			startActivity(intent);
+			//NavUtils.navigateUpFromSameTask(this);
 		} else if(result.equals("ERRO!")){
 			nearTweetAlert("Tweet nao enviado;");
 		}

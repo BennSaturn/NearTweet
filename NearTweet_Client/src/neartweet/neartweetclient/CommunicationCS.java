@@ -112,9 +112,9 @@ public class CommunicationCS {
 			System.out.println("Client closed? " + clientReceive.isClosed());
 			
 			inputReader = new BufferedReader(new InputStreamReader(clientReceive.getInputStream()));
-			System.out.println(params);
 
 			if(inputReader != null ){
+				System.out.println("inputReader: " + inputReader);
 				resultSplit = inputReader.readLine().split("\\{");
 				System.out.println("r[1]: " + resultSplit[1]);
 				usertweet = resultSplit[1].split("\\}");

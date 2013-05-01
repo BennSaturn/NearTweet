@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class TweetListActivity extends ListActivity {
-	
+
 	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
 	private String userName;
 
@@ -26,24 +26,28 @@ public class TweetListActivity extends ListActivity {
 		setContentView(R.layout.tweetlist);	
 		// Show the Up button in the action bar.
 		setupActionBar();
+		System.out.println(userName);
 		/** vai buscar o extra que passas no intent **/
 		Bundle extras = getIntent().getExtras();
 		userName = extras.getString(USERNAME);
 		//System.out.println("TweetListActivity: "+userName);
 		new GetTweetsTask(this).execute("GETLIST:"+userName);
+
+		// start the ServerListenerService
+		//startService(new Intent(this, ServerListenerService.class));
 	}
-	
+
 	public void tweet(View v) {
 		Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
 		intent.putExtra(USERNAME, userName);
 		startActivity(intent);
-		
+
 	}
 
 	public void refresh(View v) {
 		new GetTweetsTask(this).execute("GETLIST:"+userName); 
 	}
-	
+
 	public void setTweetList(List<Tweet> tweetList){
 		if(tweetList != null){
 			setListAdapter(new TweetAdapter(this, tweetList));
@@ -54,15 +58,15 @@ public class TweetListActivity extends ListActivity {
 			nearTweetAlert("Servidor em baixo!");
 		}
 	}
-	
+
 	private void nearTweetAlert(String msg){
 		new AlertDialog.Builder(this).setTitle("NearTweet Alert!").setMessage(msg)
 		.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-		public void onClick(DialogInterface dialog, int which) {
-		}
+			public void onClick(DialogInterface dialog, int which) {
+			}
 		}).show();
 	}
-	
+
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */

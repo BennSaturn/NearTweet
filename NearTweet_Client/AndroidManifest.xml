@@ -41,6 +41,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="neartweet.neartweetclient.TweetListActivity" />
         </activity>
+
+        <service android:name="neartweet.neartweetclient.ServerListenerService" />
     </application>
 
     <uses-permission android:name="android.permission.CAMERA" >
