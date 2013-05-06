@@ -90,7 +90,9 @@ public class TweetListActivity extends ListActivity {
 					//falta agarrar ao facebook para mandar o tweet
 
 					} else if (item.getTitle().equals("SPAM")){
-						
+						//Intent intent = new Intent(TweetListActivity.this, SpamActivity.class);
+						//intent.putExtra(USERNAME, userName);
+						//startActivity(intent);
 					//	marcar o tweet como spam para o servidor...
 						
 					}
@@ -121,7 +123,7 @@ public class TweetListActivity extends ListActivity {
 			
 			
 			
-			//listView.setAdapte(new TweetItemAdapter(this, R.layout.listitem, tweets));
+			//listView.setAdapter(new TweetItemAdapter(this, R.layout.listitem, tweets));
 		}
 		else {
 			nearTweetAlert("Servidor em baixo!");
