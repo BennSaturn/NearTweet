@@ -148,6 +148,7 @@ public class TweetListActivity extends ListActivity {
 					} else if (item.getTitle().equals("SPAM")){
 						Object o = parent.getAdapter().getItem(position);		
 						String status = o.toString();
+						stopService(intent);
 						new SpamTask(TweetListActivity.this).execute("SPAM:" + userName + " - " + status);
 						//	marcar o tweet como spam para o servidor...
 
@@ -190,8 +191,10 @@ public class TweetListActivity extends ListActivity {
 		if(result.equals("OK!")){
 			Toast.makeText(getBaseContext(), "Tweet Notified as Spam", Toast.LENGTH_SHORT).show();
 			//NavUtils.navigateUpFromSameTask(this);
+			startService(intent);
 		} else if(result.equals("ERRO!")){
 			nearTweetAlert("Spam nao registado");
+			startService(intent);
 		}
 	}
 
