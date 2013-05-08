@@ -4,49 +4,97 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
-public class ClientConnectorTask extends AsyncTask<String, Void, Integer> {
+public class ClientConnectorTask extends AsyncTask<String, String, String> {
+	private ProgressDialog progress;
+	private MainActivity context;
 	private Socket clientSend;
+	private ServerSocket serverSocketReceive;
 	private Socket clientReceive;
 	private PrintWriter printwriter;
 	private BufferedReader inputReader;
-	protected Integer doInBackground(String...strings) {
+
+	public ClientConnectorTask(MainActivity context) {
+		this.context = context;
+	}
+
+	@Override
+	protected void onPreExecute() {
+		//Cria novo um ProgressDialogo e exibe
+		progress = new ProgressDialog(context);
+		progress.setMessage("Aguarde...");
+		progress.show();
+	}
+
+	@Override
+	protected String doInBackground(String... params) {
+
+		System.out.println("doInBackground!!!!!!!");
 		// validate input parameters
-		if (strings.length <= 0) {
-			return 0;
+		if (params.length <= 0) {
+			return null;
 		}
+
+		for(int i = 0; i<2; i++){
+			try {
+				System.out.println("ciclo for!!");
+				Thread.sleep(500);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		}
+
 		// connect to the server and send the message
 		try {
 			clientSend = new Socket("10.0.2.2", 4444);
-			clientReceive = new Socket("10.0.2.2", 4445);
+			serverSocketReceive = new ServerSocket(6000);
 			printwriter = new PrintWriter(clientSend.getOutputStream(),true);
-			inputReader = new BufferedReader(new InputStreamReader(clientReceive.getInputStream()));
-			printwriter.write(strings[0]);
-			printwriter.flush();      
-			printwriter.close();
+			printwriter.write(params[0]);
+			printwriter.close();	
 			clientSend.close();
-			String line;
-			
-			while(true){
+
+			clientReceive = serverSocketReceive.accept();
+			inputReader = new BufferedReader(new InputStreamReader(clientReceive.getInputStream()));		
+
+			int time = 0;
+			long timeout = 100;
+			while (time<timeout){
+				time ++;
+				String line;
 				if ((line = inputReader.readLine()) != null){
 					inputReader.close();
 					clientReceive.close();
-					System.out.println("ClientConnecterTask: "+line.toString());
-					return 0;
+					serverSocketReceive.close();
+					//System.out.println("ClientConnecterTask: "+line.toString());
+					return line.toString();
 				}
-
 			}
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return 0;
+		return "ERRO!";
 	}
-	protected void onPostExecute(Long result) {
-		return;
+
+	@Override
+	protected void onPostExecute(String result) {
+		//Cancela progressDialogo e envia resultado
+		System.out.println("onPostExecute!!!!!!!");
+		progress.dismiss();
+		context.setResult(result);
+
+	}
+
+	@Override
+	protected void onProgressUpdate(String... values) {
+		//Atualiza mensagem
+		progress.setMessage(values[0]);
 	}
 }

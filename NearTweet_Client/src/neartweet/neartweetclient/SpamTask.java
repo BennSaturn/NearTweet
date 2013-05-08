@@ -1,5 +1,13 @@
 package neartweet.neartweetclient;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
@@ -7,7 +15,11 @@ public class SpamTask extends AsyncTask<String, String, String>{
 
 		private ProgressDialog progress;
 		private SpamActivity context;
-		private String tweetResult;
+		private Socket clientSend;
+		private ServerSocket serverSocketReceive;
+		private Socket clientReceive;
+		private PrintWriter printwriter;
+		private BufferedReader inputReader;
 		
 		public SpamTask(SpamActivity context) {
 			this.context = context;
@@ -39,23 +51,36 @@ public class SpamTask extends AsyncTask<String, String, String>{
 			}
 
 			// connect to the server and send the message
-				System.out.println("params[0]: " + params[0]);
-				tweetResult = CommunicationCS.obtainInfo(params[0]);
-				//int init = (int) System.currentTimeMillis();
-				//System.out.println(init);
+			try {
+				clientSend = new Socket("10.0.2.2", 4444);
+				serverSocketReceive = new ServerSocket(6000);
+				printwriter = new PrintWriter(clientSend.getOutputStream(),true);
+				printwriter.write(params[0]);
+				printwriter.close();	
+				clientSend.close();
+
+				clientReceive = serverSocketReceive.accept();
+				inputReader = new BufferedReader(new InputStreamReader(clientReceive.getInputStream()));		
+
 				int time = 0;
 				long timeout = 100;
 				while (time<timeout){
-					//time += (int) (System.currentTimeMillis() - init);
 					time ++;
-					System.out.println(time);
-					if (tweetResult != null){
-						//clientReceive.close();
-						System.out.println("SpamTask: "+ tweetResult);
-						return tweetResult;
+					String line;
+					if ((line = inputReader.readLine()) != null){
+						inputReader.close();
+						clientReceive.close();
+						serverSocketReceive.close();
+						//System.out.println("ClientConnecterTask: "+line.toString());
+						return line.toString();
 					}
 				}
-			return tweetResult;
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return "ERRO!";
 		}
 
 		@Override

@@ -2,6 +2,8 @@ package neartweet.neartweetclient;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +11,14 @@ import java.util.Map;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
-public class GetTweetsTask extends AsyncTask<String, String, List<Tweet>>{
+public class GetTweetsTask extends AsyncTask<String, String, Integer>{
 
 	private ProgressDialog progress;
 	private TweetListActivity context;
-	private List<Tweet> objectInput = new ArrayList<Tweet>();
-	
+	private Socket clientSend;
+	private PrintWriter printwriter;
+	//private List<Tweet> objectInput = new ArrayList<Tweet>();
+
 	public GetTweetsTask(TweetListActivity context) {
 		this.context = context;
 	}
@@ -28,7 +32,7 @@ public class GetTweetsTask extends AsyncTask<String, String, List<Tweet>>{
 	}
 
 	@Override
-	protected List<Tweet> doInBackground(String... params) {
+	protected Integer doInBackground(String... params) {
 
 		System.out.println("doInBackground!!!!!!!");
 		// validate input parameters
@@ -44,38 +48,41 @@ public class GetTweetsTask extends AsyncTask<String, String, List<Tweet>>{
 			}
 		}
 
-		// connect to the server and send the message
-			System.out.println("params[0]: " + params[0]);
-			
-			if(objectInput.size() > 0) {
-				System.out.println(objectInput.size());
-				objectInput.clear();
-			}
-			objectInput = CommunicationCS.obtainInfo2(params[0]);
-			//int init = (int) System.currentTimeMillis();
-			//System.out.println(init);
-			int time = 0;
-			long timeout = 100;
-			while (time<timeout){
-				//time += (int) (System.currentTimeMillis() - init);
-				time ++;
-				System.out.println(time);
-				if (objectInput != null){
-					//clientReceive.close();
-					System.out.println("GetTweetsTask: "+objectInput.toString());
-					return objectInput;
-				}
-			}
-		return objectInput;
+		//connect to the server and send the message
+		System.out.println("params[0]: " + params[0]);
+
+		//if(objectInput.size() > 0) {
+		//	System.out.println(objectInput.size());
+		//	objectInput.clear();
+		//}
+		//objectInput = CommunicationCS.obtainInfo2(params[0]);
+		//int init = (int) System.currentTimeMillis();
+		//System.out.println(init);
+
+		try {
+			clientSend = new Socket("10.0.2.2", 4444);
+
+			printwriter = new PrintWriter(clientSend.getOutputStream(),true);
+			printwriter.write(params[0]);
+			printwriter.flush();      
+			printwriter.close();
+			clientSend.close();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return 0;
 	}
 
 	@Override
-	protected void onPostExecute(List<Tweet> result) {
+	protected void onPostExecute(Integer i) {
 		//Cancela progressDialogo e envia resultado
 		System.out.println("onPostExecute!!!!!!!");
 		progress.dismiss();
-		context.setTweetList(result);
-		
+		//context.setTweetList(result);
+
 	}
 
 	@Override

@@ -37,6 +37,7 @@ public class Main {
 	private static int spamValue;
 	private static int banValue = 10;
 	private static Long tweetTime;
+	private static Map<String, String> oneTweetList = new TreeMap<String, String>();
 
 	public static void main(String[] args) {
 
@@ -110,16 +111,12 @@ public class Main {
 
 
 		//Falta avisar o utilizador...
-		if(listClients.containsKey(username)){
-			System.out.println("User already exists!");
-			return;
+		if(!listClients.containsKey(username)){
+			listClients.put(username, port);
 		}else if( spamTweetList.containsKey(username)){
 			System.out.println("User blocked over spam!");
 			return;
 		}
-
-		listClients.put(username, port);
-		/*+"/"+port+"/0" */
 
 		try {
 			serverSocketSend = new Socket("127.0.0.1", port);
@@ -135,45 +132,45 @@ public class Main {
 	}
 
 	public static void tweet(){
+		System.out.println("Server: TWEET");
+		tweet = operation[1].split(" - ");
+		// ver todos os portos/clientes existentes
+		tweetTime = System.currentTimeMillis();
+		spamTweetList.put(tweet[0] + " - " + tweet[1], 0);
+		userTweetList.put(tweetTime.toString(), tweet[0] + " - " + tweet[1]);
+		System.out.println(tweet[0]+"-"+tweet[1]);
 
-		synchronized (Main.class) {
-			tweet = operation[1].split(" - ");
-			// ver todos os portos/clientes existentes
-			tweetTime = System.currentTimeMillis();
-			spamTweetList.put(tweet[0] + " - " + tweet[1], 0);
-			userTweetList.put(tweetTime.toString(), tweet[0] + " - " + tweet[1]);
-			System.out.println(tweet[0]+"-"+tweet[1]);
-		}
-		
 		Thread sendTweet = new Thread() {
 			public void run() {
 				Socket socketSend;
-				synchronized (Main.class){
-					for (int port : listClients.values()){
-						if (port != listClients.get(tweet[0])) {
-							try {
-								socketSend = new Socket("127.0.0.1", port);
-								outputStreamWriter = new OutputStreamWriter(socketSend.getOutputStream());
-								outputStreamWriter.write((String.valueOf(tweetTime))+tweet[0] + " - " + tweet[1]);
-								outputStreamWriter.flush();
-								outputStreamWriter.close();
-								socketSend.close();
-							} catch (UnknownHostException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+				OutputStreamWriter outputStream;
+				for (int port : listClients.values()){
+					System.out.println(port);
+					if (port != listClients.get(tweet[0])) {
+						try {
+							socketSend = new Socket("127.0.0.1", port);
+							outputStream = new OutputStreamWriter(socketSend.getOutputStream());
+							oneTweetList.clear();
+							oneTweetList.put(tweetTime.toString(), tweet[0] + " - " + tweet[1]);
+							outputStream.write(oneTweetList.toString());
+							outputStream.flush();
+							outputStream.close();
+							socketSend.close();
+						} catch (UnknownHostException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
 				}
 			}
+
 		};
 		sendTweet.start();
-		
+
 		try {
-			System.out.println(listClients.get(tweet[0]));
 			serverSocketSend = new Socket("127.0.0.1", listClients.get(tweet[0]));
 			outputStreamWriter = new OutputStreamWriter(serverSocketSend.getOutputStream());
 			outputStreamWriter.write("OK!");
@@ -185,6 +182,7 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public static void reply(){

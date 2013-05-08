@@ -1,8 +1,8 @@
 package neartweet.neartweetclient;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import android.R.id;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -11,22 +11,29 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.PopupMenu;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 
+@SuppressLint("HandlerLeak")
 public class TweetListActivity extends ListActivity {
 
 	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
 	private String userName;
+	static TweetAdapter array; 
+	static List<Tweet> tweetList = new ArrayList<Tweet>();
+	private static Handler tweetHandler;
+	private Intent intent;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -39,13 +46,57 @@ public class TweetListActivity extends ListActivity {
 		Bundle extras = getIntent().getExtras();
 		userName = extras.getString(USERNAME);
 		//System.out.println("TweetListActivity: "+userName);
-		new GetTweetsTask(this).execute("GETLIST:"+userName);
+
+		/** Thread que trata das respostas do servidor **/
+		tweetHandler=new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				System.out.println("Recebeu lista!!");
+				List<Tweet> list = msg.getData().getParcelableArrayList("listtweet");
+				//System.out.println("list.size: "+list.size()+"tweetlist.isEmpty(): "+(!tweetList.isEmpty()));
+				if((!tweetList.isEmpty()) && (list.size()==1)) {
+					Tweet tweet = list.get(0);
+					if(!tweet.getUsername().equals("NearTweetStaff")) {
+						//System.out.println(tweet.getUsername()+"-"+tweet.getMessage());
+						tweetList.add(0, tweet);
+						int i=0;
+						while(tweetList.size()>i){
+							System.out.println(tweetList.get(i).username);
+							i++;
+						}
+						array.notifyDataSetChanged();
+						ListView listView = (ListView) findViewById(android.R.id.list);
+						listView.setLongClickable(true);
+						listView.setOnItemLongClickListener(longMessageClickedHandler);
+						listView.setOnItemClickListener(quickMessageClickedHandler);
+					}
+				} else {
+					tweetList.clear();
+					while(!list.isEmpty()){
+						tweetList.add(list.remove(0));
+					}
+					array = new TweetAdapter(TweetListActivity.this, tweetList);
+					setListAdapter(array);
+					ListView listView = (ListView) findViewById(android.R.id.list);
+					listView.setLongClickable(true);
+					listView.setOnItemLongClickListener(longMessageClickedHandler);
+					listView.setOnItemClickListener(quickMessageClickedHandler);
+				}
+			}
+		};
 
 		// start the ServerListenerService
-		//startService(new Intent(this, ServerListenerService.class));
+		intent = new Intent(this, ServerListenerService.class);  
+		intent.putExtra(ServerListenerService.EXTRA_MESSENGER, new Messenger(tweetHandler));  
+		startService(intent);
+		array = new TweetAdapter(TweetListActivity.this, tweetList);
+		setListAdapter(array);
+		// pede a lista pela primeira vez
+		new GetTweetsTask(this).execute("GETLIST:"+userName);
 	}
 
 	public void tweet(View v) {
+		stopService(intent);
 		Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
 		intent.putExtra(USERNAME, userName);
 		startActivity(intent);
@@ -53,22 +104,24 @@ public class TweetListActivity extends ListActivity {
 	}
 
 	public void refresh(View v) {
+		array = new TweetAdapter(TweetListActivity.this, tweetList);
+		setListAdapter(array);
 		new GetTweetsTask(this).execute("GETLIST:"+userName); 
 	}
-	
+
 	private OnItemClickListener quickMessageClickedHandler = new OnItemClickListener() {
-	    public void onItemClick(AdapterView parent, View v, int position, long id) {
-	    	Intent intent = new Intent(TweetListActivity.this, TweetSelectedActivity.class);
+		public void onItemClick(AdapterView parent, View v, int position, long id) {
+			Intent intent = new Intent(TweetListActivity.this, TweetSelectedActivity.class);
 			intent.putExtra(USERNAME, userName);
 			startActivity(intent);
-	    }
+		}
 	};
-	
+
 	private OnItemLongClickListener longMessageClickedHandler = new OnItemLongClickListener() {
-	    public boolean onItemLongClick(AdapterView<?> parent, View v,
+		public boolean onItemLongClick(AdapterView<?> parent, View v,
 				int position, long id) {
-	    	
-	    	PopupMenu popup = new PopupMenu(getBaseContext(), v);
+
+			PopupMenu popup = new PopupMenu(getBaseContext(), v);
 
 			/** Adding menu items to the popumenu */
 			popup.getMenuInflater().inflate(R.menu.popuptweetmenu, popup.getMenu());
@@ -79,50 +132,47 @@ public class TweetListActivity extends ListActivity {
 				@Override
 				public boolean onMenuItemClick(MenuItem item) {
 					if(item.getTitle().equals("Reply")){
-						
+
 						Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
 						intent.putExtra(USERNAME, userName);
-					//condição para decidir se é pessoal ou púbico
+						//condicao para decidir se e pessoal ou publico
 						startActivity(intent);
-						
+
 					} else if (item.getTitle().equals("ReTweet")){
 
-					//falta agarrar ao facebook para mandar o tweet
+						//falta agarrar ao facebook para mandar o tweet
 
 					} else if (item.getTitle().equals("SPAM")){
 						//Intent intent = new Intent(TweetListActivity.this, SpamActivity.class);
 						//intent.putExtra(USERNAME, userName);
 						//startActivity(intent);
-					//	marcar o tweet como spam para o servidor...
-						
+						//	marcar o tweet como spam para o servidor...
+
 					}
 					return true;
 				}
-				
+
 			});
-			
+
 
 			/** Showing the popup menu */
 			popup.show();
 			return true;
-	    }
+		}
 	};
-	
+
 
 	public void setTweetList(List<Tweet> tweetList){
 		if(tweetList != null){
 			setListAdapter(new TweetAdapter(this, tweetList));
-			
+
 			ListView listView = (ListView) findViewById(android.R.id.list);
-			
-			
 			listView.setLongClickable(true);
 			listView.setOnItemLongClickListener(longMessageClickedHandler);
-			
 			listView.setOnItemClickListener(quickMessageClickedHandler);
-			
-			
-			
+
+
+
 			//listView.setAdapter(new TweetItemAdapter(this, R.layout.listitem, tweets));
 		}
 		else {

@@ -32,8 +32,6 @@ public class MainActivity extends Activity {
 		System.out.println("deviceMobileNo: " + deviceMobileNo);
 		String substring = deviceMobileNo.length() > 2 ? deviceMobileNo.substring(deviceMobileNo.length() - 2) : deviceMobileNo;
 		port = "90"+substring;
-		CommunicationCS.initServerSocketReceive();
-		
 	}
 
 	public void loginResponse(View view){
@@ -46,7 +44,6 @@ public class MainActivity extends Activity {
 		message = enter_usernameTx.getText().toString();
 		enter_usernameTx.setText("");
 		new LoginResponseTask(this).execute("LOGIN:"+ message +":"+port);
-		//new ClientConnectorTask().execute("LOGIN:"+ message);
 	}
 
 	public void setResult(String result){
@@ -55,11 +52,9 @@ public class MainActivity extends Activity {
 		
 		if(result.equals("OK!")){
 			Intent intent = new Intent(this, TweetListActivity.class);
-			System.out.println("Intent extra: "+ message);
+			//System.out.println("Intent extra: "+ message);
 			intent.putExtra(USERNAME, message);
 			startActivity(intent);
-		} else if(result.equals("EXISTE!")){
-			nearTweetAlert("Utilizador ja existe!");
 		} else if(result.equals("ERRO!")){
 			nearTweetAlert("Servidor em baixo!");
 		}

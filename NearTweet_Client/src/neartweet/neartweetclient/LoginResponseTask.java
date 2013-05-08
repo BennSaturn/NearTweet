@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -13,7 +14,11 @@ import android.os.AsyncTask;
 public class LoginResponseTask extends AsyncTask<String, String, String> {
 	private ProgressDialog progress;
 	private MainActivity context;
-	private String result;
+	private Socket clientSend;
+	private ServerSocket serverSocketReceive;
+	private Socket clientReceive;
+	private PrintWriter printwriter;
+	private BufferedReader inputReader;
 
 	public LoginResponseTask(MainActivity context) {
 		this.context = context;
@@ -46,22 +51,34 @@ public class LoginResponseTask extends AsyncTask<String, String, String> {
 		}
 
 		// connect to the server and send the message
-		System.out.println("params[0]: " + params[0]);
-		result = CommunicationCS.obtainInfo(params[0]);
+		try {
+			clientSend = new Socket("10.0.2.2", 4444);
+			serverSocketReceive = new ServerSocket(6000);
+			printwriter = new PrintWriter(clientSend.getOutputStream(),true);
+			printwriter.write(params[0]);
+			printwriter.close();	
+			clientSend.close();
 
-		//int init = (int) System.currentTimeMillis();
-		//System.out.println(init);
-		int time = 0;
-		long timeout = 100;
-		while (time<timeout){
-			//time += (int) (System.currentTimeMillis() - init);
-			time ++;
-			System.out.println(time);
+			clientReceive = serverSocketReceive.accept();
+			inputReader = new BufferedReader(new InputStreamReader(clientReceive.getInputStream()));		
 
-			if (result != null){
-				System.out.println("ClientConnecterTask: "+result);
-				return result;
+			int time = 0;
+			long timeout = 100;
+			while (time<timeout){
+				time ++;
+				String line;
+				if ((line = inputReader.readLine()) != null){
+					inputReader.close();
+					clientReceive.close();
+					serverSocketReceive.close();
+					//System.out.println("ClientConnecterTask: "+line.toString());
+					return line.toString();
+				}
 			}
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return "ERRO!";
 	}
