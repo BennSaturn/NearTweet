@@ -1,5 +1,7 @@
 package neartweet.neartweetclient;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +45,7 @@ public class FacebookRetweetActivity extends Activity {
 
 	private Facebook facebook;
 	private String messageToPost;
-
+	
 	public boolean saveCredentials(Facebook facebook) {
 		Editor editor = getApplicationContext().getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
 		editor.putString(TOKEN, facebook.getAccessToken());
@@ -63,6 +65,7 @@ public class FacebookRetweetActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.facebook_dialog);
 		facebook = new Facebook(APP_ID);
+		facebook.authorize(FacebookRetweetActivity.this, new LoginDialogListener());
 		restoreCredentials(facebook);
 
 		String facebookMessage = getIntent().getStringExtra("facebookMessage");
@@ -94,7 +97,6 @@ public class FacebookRetweetActivity extends Activity {
 		Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
 
 		if (!session.isOpened() && !session.isClosed() && session.getState() != SessionState.OPENING) {
-			Log.d(ACTIVITY_SERVICE,"open for publish");
 			OpenRequest open = new OpenRequest(this).setCallback(statusCallback);
 			PERMISSIONS.add("publish_stream");
 			PERMISSIONS.add("publish_actions");
@@ -127,6 +129,15 @@ public class FacebookRetweetActivity extends Activity {
 	}  
 
 	public void postToWall(String message){
+		try {
+			String response = facebook.request("me");
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		final Bundle parameters = new Bundle();
 		parameters.putString("message", message);
 		parameters.putString("description", "topic share"); 

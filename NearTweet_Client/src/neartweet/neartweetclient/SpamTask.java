@@ -14,14 +14,14 @@ import android.os.AsyncTask;
 public class SpamTask extends AsyncTask<String, String, String>{
 
 		private ProgressDialog progress;
-		private SpamActivity context;
+		private TweetListActivity context;
 		private Socket clientSend;
 		private ServerSocket serverSocketReceive;
 		private Socket clientReceive;
 		private PrintWriter printwriter;
 		private BufferedReader inputReader;
 		
-		public SpamTask(SpamActivity context) {
+		public SpamTask(TweetListActivity context) {
 			this.context = context;
 		}
 
@@ -88,7 +88,7 @@ public class SpamTask extends AsyncTask<String, String, String>{
 			//Cancela progressDialogo e envia resultado
 			System.out.println("onPostExecute!!!!!!!");
 			progress.dismiss();
-			context.setResult(result);
+			context.setSpamResult(result);
 			
 		}
 

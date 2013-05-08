@@ -21,8 +21,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
 @SuppressLint("HandlerLeak")
@@ -118,8 +120,8 @@ public class TweetListActivity extends ListActivity {
 	};
 
 	private OnItemLongClickListener longMessageClickedHandler = new OnItemLongClickListener() {
-		public boolean onItemLongClick(AdapterView<?> parent, View v,
-				int position, long id) {
+		public boolean onItemLongClick(final AdapterView<?> parent, View v,
+				final int position, long id) {
 
 			PopupMenu popup = new PopupMenu(getBaseContext(), v);
 
@@ -139,13 +141,14 @@ public class TweetListActivity extends ListActivity {
 						startActivity(intent);
 
 					} else if (item.getTitle().equals("ReTweet")){
-
+						Intent intent = new Intent(TweetListActivity.this, FacebookRetweetActivity.class);
+						startActivity(intent);
 						//falta agarrar ao facebook para mandar o tweet
 
 					} else if (item.getTitle().equals("SPAM")){
-						//Intent intent = new Intent(TweetListActivity.this, SpamActivity.class);
-						//intent.putExtra(USERNAME, userName);
-						//startActivity(intent);
+						Object o = parent.getAdapter().getItem(position);		
+						String status = o.toString();
+						new SpamTask(TweetListActivity.this).execute("SPAM:" + userName + " - " + status);
 						//	marcar o tweet como spam para o servidor...
 
 					}
@@ -177,6 +180,18 @@ public class TweetListActivity extends ListActivity {
 		}
 		else {
 			nearTweetAlert("Servidor em baixo!");
+		}
+	}
+	
+	public void setSpamResult(String result){
+
+		System.out.println("SpamActivity: "+ result);
+
+		if(result.equals("OK!")){
+			Toast.makeText(getBaseContext(), "Tweet Notified as Spam", Toast.LENGTH_SHORT).show();
+			//NavUtils.navigateUpFromSameTask(this);
+		} else if(result.equals("ERRO!")){
+			nearTweetAlert("Spam nao registado");
 		}
 	}
 

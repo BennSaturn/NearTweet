@@ -24,7 +24,7 @@ public class SpamActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.id.spam);	
+		//setContentView(R.id.spam);	
 		// Show the Up button in the action bar.
 		setupActionBar();
 
@@ -50,7 +50,7 @@ public class SpamActivity extends Activity{
 	/** OnClick Spam button */
 	public void spamTweet(View v) {
 		EditText tweet = (EditText) findViewById(R.id.editText1);
-		new SpamTask(this).execute("SPAM:" + userName + " - " + tweet.getText().toString());		
+		//new SpamTask(this).execute("SPAM:" + userName + " - " + tweet.getText().toString());		
 	}
 
 	public void setResult(String result){
