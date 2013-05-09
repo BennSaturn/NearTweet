@@ -6,205 +6,116 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.facebook.LoggingBehavior;
-import com.facebook.FacebookRequestError;
-//import com.facebook.LoginActivity;
-import com.facebook.Request;
-import com.facebook.Response;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
 import com.facebook.Session;
-import com.facebook.Session.OpenRequest;
-import com.facebook.SessionState;
-import com.facebook.Settings;
+import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
-import com.facebook.model.GraphObject;
-import com.facebook.model.GraphUser;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.Window;
-import android.widget.Toast;
+public class FacebookRetweetActivity extends FragmentActivity {
 
-public class FacebookRetweetActivity extends Activity {
-
-	private static final String APP_ID = "160929487409513";
+	private static final String APP_ID = "449619755128925";
+	public final static String RETWEET = "nearTweet.neartweetclient.RETWEET";
+	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
 	private static final List<String> PERMISSIONS = new ArrayList<String>(); 
-	private Session.StatusCallback statusCallback = new SessionStatusCallback();
-
-	private static final String TOKEN = "access_token";
-	private static final String EXPIRES = "expires_in";
-	private static final String KEY = "facebook-credentials";
-
+	private SharedPreferences mPrefs;
 	private Facebook facebook;
+	private AsyncFacebookRunner mAsyncRunner;
 	private String messageToPost;
-	
-	public boolean saveCredentials(Facebook facebook) {
-		Editor editor = getApplicationContext().getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
-		editor.putString(TOKEN, facebook.getAccessToken());
-		editor.putLong(EXPIRES, facebook.getAccessExpires());
-		return editor.commit();
-	}
+	private FacebookConnector facebookConnector;
+	private final Handler mFacebookHandler = new Handler();
+	private static final String TAG = "NearTweetGrupo1";
+	private static final String MSG = "Message from NearTweetGrupo1";
+	private static String user;
 
-	public boolean restoreCredentials(Facebook facebook) {
-		SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(KEY, Context.MODE_PRIVATE);
-		facebook.setAccessToken(sharedPreferences.getString(TOKEN, null));
-		facebook.setAccessExpires(sharedPreferences.getLong(EXPIRES, 0));
-		return facebook.isSessionValid();
-	}
+	final Runnable mUpdateFacebookNotification = new Runnable() {
+		public void run() {
+			Toast.makeText(getBaseContext(), "Facebook updated !", Toast.LENGTH_LONG).show();
+			finish();
+		}
+	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.facebook_dialog);
-		facebook = new Facebook(APP_ID);
-		facebook.authorize(FacebookRetweetActivity.this, new LoginDialogListener());
-		restoreCredentials(facebook);
-
-		String facebookMessage = getIntent().getStringExtra("facebookMessage");
-		if (facebookMessage == null){
-			facebookMessage = "Test wall post";
+		this.facebookConnector = new FacebookConnector(APP_ID, this, getApplicationContext(), new String[] {"publish_stream", "publish_actions"});
+		String facebookMessage = getIntent().getStringExtra(RETWEET);
+		String[] userMessage = facebookMessage.split("/");
+		user = userMessage[0];
+		
+		if (userMessage[1] == null){
+			userMessage[1] = "Test wall post";
 		}
-		messageToPost = facebookMessage;
+		messageToPost = userMessage[1];
 	}
 
 	public void doNotShare(View button){
 		finish();
 	}
 	public void share(View button){
-		if (!facebook.isSessionValid()) {
-			loginAndPostToWall();
-		}
-		else {
-			postToWall(messageToPost);
-		}
+		postMessage();
 	}
 
-	public void loginAndPostToWall(){
-		facebook = new Facebook(APP_ID);
-
-		Session session = new Session(this);
-		Session.setActiveSession(session);
-		SessionState state = session.getState();
-
-		Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
-
-		if (!session.isOpened() && !session.isClosed() && session.getState() != SessionState.OPENING) {
-			OpenRequest open = new OpenRequest(this).setCallback(statusCallback);
-			PERMISSIONS.add("publish_stream");
-			PERMISSIONS.add("publish_actions");
-			open.setPermissions(PERMISSIONS);
-			session.openForPublish(open);
+	private String getFacebookMsg() {
+		return MSG + " at " + new Date().toLocaleString();
+	}	
+	
+	public void postMessage() {
+		
+		if (facebookConnector.getFacebook().isSessionValid()) {
+			postMessageInThread();
 		} else {
-			Log.d(ACTIVITY_SERVICE,"open?");
-			// start Facebook Login
-			Session.openActiveSession(this, true, new Session.StatusCallback() {
-				// callback when session changes state
+			SessionEvents.AuthListener listener = new SessionEvents.AuthListener() {
+				
 				@Override
-				public void call(Session session, SessionState state, Exception exception) {
-					if (session.isOpened()) {
-
-						// make request to the /me API
-						Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
-
-							// callback after Graph API response with user object
-							@Override
-							public void onCompleted(GraphUser arg0, Response arg1) {
-								// TODO Auto-generated method stub
-								Log.d(ACTIVITY_SERVICE,getApplicationContext() + "Welcome " + arg0.getFirstName() +" "+ arg1.toString());
-							}
-						});
-					}
+				public void onAuthSucceed() {
+					postMessageInThread();
 				}
-			});
-		}
-		postToWall(messageToPost);
-	}  
-
-	public void postToWall(String message){
-		try {
-			String response = facebook.request("me");
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		final Bundle parameters = new Bundle();
-		parameters.putString("message", message);
-		parameters.putString("description", "topic share"); 
-		Thread t = new Thread(new Runnable() {
-			public void run() {
-				try {
-					String response = facebook.request("me/feed", parameters, "POST");
-					Log.d("Tests", "got response: " + response);
-					if (response == null || response.equals("") ||
-							response.equals("false")) {
-						showToast("Blank response."); 
-					}
-					else {
-						showToast("Message posted to your facebook wall!");
-					} 
-					finish();
-				} catch (Exception e) {
-					showToast("Failed to post to wall!");
-					e.printStackTrace();
-					finish();
+				
+				@Override
+				public void onAuthFail(String error) {
+					
 				}
-			}
-		});
-		t.start();
+			};
+			SessionEvents.addAuthListener(listener);
+			facebookConnector.login();
+		}
 	}
 
-	class LoginDialogListener implements DialogListener {
-		public void onComplete(Bundle values) {
-			saveCredentials(facebook);
-			if (messageToPost != null){
-				postToWall(messageToPost);
-			}
-		}
-		@Override
-		public void onError(DialogError arg0) {
-			showToast("Authentication with Facebook failed!");
-			finish();
-
-		}
-		@Override
-		public void onFacebookError(FacebookError arg0) {
-			showToast("Authentication with Facebook failed!");
-			finish();
-
-		}
-		@Override
-		public void onCancel() {
-			showToast("Authentication with Facebook cancelled!");
-			finish();		
-		}
+	private void postMessageInThread() {
+		Thread t = new Thread() {
+			public void run() {
+		    	
+		    	try {
+		    		facebookConnector.postMessageOnWall(messageToPost);
+					mFacebookHandler.post(mUpdateFacebookNotification);
+				} catch (Exception ex) {
+					Log.e(TAG, "Error sending msg",ex);
+				}
+		    }
+		};
+		t.start();
 	}
 
 	private void showToast(String message){
 		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 	}
 
-	private class SessionStatusCallback implements Session.StatusCallback {
-		@Override
-		public void call(Session session, SessionState state, Exception exception) {
-			//updateView();
-		}
-	}
-
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+		this.facebookConnector.getFacebook().authorizeCallback(requestCode, resultCode, data);
 	}
 }
 

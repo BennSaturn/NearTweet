@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +32,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 public class TweetListActivity extends ListActivity {
 
 	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
+	public final static String RETWEET = "nearTweet.neartweetclient.RETWEET";
 	private String userName;
 	static TweetAdapter array; 
 	static List<Tweet> tweetList = new ArrayList<Tweet>();
@@ -142,14 +144,19 @@ public class TweetListActivity extends ListActivity {
 
 					} else if (item.getTitle().equals("ReTweet")){
 						Intent intent = new Intent(TweetListActivity.this, FacebookRetweetActivity.class);
+						Tweet retweet = (Tweet) parent.getAdapter().getItem(position);		
+						String retweetU = retweet.getUsername();
+						String retweetM = retweet.getMessage();
+						intent.putExtra(RETWEET,userName + "/" + retweetU + ": " + retweetM);
 						startActivity(intent);
 						//falta agarrar ao facebook para mandar o tweet
 
 					} else if (item.getTitle().equals("SPAM")){
-						Object o = parent.getAdapter().getItem(position);		
-						String status = o.toString();
+						Tweet spamT = (Tweet) parent.getAdapter().getItem(position);		
+						String spamU = spamT.getUsername();
+						Log.d(ACTIVITY_SERVICE,spamT.getUsername() + spamT.getMessage());
 						stopService(intent);
-						new SpamTask(TweetListActivity.this).execute("SPAM:" + userName + " - " + status);
+						new SpamTask(TweetListActivity.this).execute("SPAM "+ spamU);
 						//	marcar o tweet como spam para o servidor...
 
 					}
