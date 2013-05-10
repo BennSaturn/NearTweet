@@ -222,6 +222,9 @@ public class Main {
 		System.out.println(poll);
 		spamTweetList.put(poll, 0);
 		userTweetList.put(poll, userName);
+		
+		//Notificar clientes da nova "msg"..
+		
 		/*	for (String s :listClients.values()){
 			String[] portClient = s.split("/");
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
