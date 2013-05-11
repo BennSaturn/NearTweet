@@ -32,6 +32,7 @@ public class Main {
 	private static String poll;
 	private static String sharing;
 	private static String spam;
+	private static String userReplyID;
 	private static Map<String, Integer> listClients = new HashMap<String, Integer>();
 	private static Map<Integer, String> tweetList = new HashMap<Integer, String>();
 	private static Map<String, Integer> replyList = new HashMap<String, Integer>();
@@ -188,10 +189,9 @@ public class Main {
 	}
 
 	public static void reply(){
-		System.out.println(operation[1]);
 		tweet = operation[1].split(" - ");
-		System.out.println("Reply: " + tweet[0] + tweet[1] + tweet[2] + tweet[3]);
-		String[] personReply = tweet[1].split(":");
+		userReplyID = tweet[1].substring(1, tweet[1].length());
+		System.out.println(tweet[1]);
 		tweetTime = System.currentTimeMillis();
 		spamTweetList.put(tweet[3], 0);
 		userTweetList.put(tweetTime.toString(), tweet[0] + " - " + tweet[3]);
@@ -200,13 +200,44 @@ public class Main {
 		Iterator it = tweetList.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry)it.next();
-			if(pairs.getValue().equals(tweet[1]+ " - " +  tweet[2])){
+			if(pairs.getValue().equals(userReplyID + " - " +  tweet[2])){
 				nConversation = (int) pairs.getKey();
 			}	
 		}
 		replyList.put(tweet[0] + " - " + tweet[3], nConversation);
+		
+		Thread sendReply = new Thread() {
+			public void run() {
+				Socket socketSend;
+				OutputStreamWriter outputStream;
+				for (int port : listClients.values()){
+					System.out.println(port);
+					if (port != listClients.get(userReplyID)) {
+						try {
+							socketSend = new Socket("127.0.0.1", port);
+							outputStream = new OutputStreamWriter(socketSend.getOutputStream());
+							oneTweetList.clear();
+							oneTweetList.put(tweetTime.toString(), tweet[0] + " - "+ "@" + userReplyID + " " + tweet[3]);
+							outputStream.write(oneTweetList.toString());
+							outputStream.flush();
+							outputStream.close();
+							socketSend.close();
+						} catch (UnknownHostException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+
+		};
+		sendReply.start();
+			
 		try {
-			serverSocketSend = new Socket("127.0.0.1", listClients.get(tweet[1]));
+			serverSocketSend = new Socket("127.0.0.1", listClients.get(userReplyID));
 			outputStreamWriter = new OutputStreamWriter(serverSocketSend.getOutputStream());
 			outputStreamWriter.write("OK!");
 			outputStreamWriter.flush();
