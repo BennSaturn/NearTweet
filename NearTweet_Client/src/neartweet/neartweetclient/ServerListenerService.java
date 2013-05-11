@@ -60,77 +60,79 @@ public class ServerListenerService extends Service {
 				while(run) {
 					try{
 						clientReceive = serverSocketReceive.accept();
-						Log.i(TAG, "Service onStartCommand " + "Recebeu TWEET!");
+						Log.i(TAG, "Service onStartCommand " + "Recebeu dados do servidor!");
 						inputReader = new BufferedReader(new InputStreamReader(clientReceive.getInputStream()));
 						index = 0;
 						if(inputReader != null ){
 							resultRead = inputReader.readLine();
-							Log.i(TAG, "Service onStartCommand " + "O que recebeu: " + resultRead);
-							resultSplit = resultRead.split("\\{");
-							System.out.println("r[1]: " + resultSplit[1]);
-							usertweet = resultSplit[1].split("\\}");
-							if(usertweet.length == 1){
-								System.out.println("u[0]: " + usertweet[0]);
-								msgtweet = usertweet[0].split(", ");
-								if(msgtweet.length != 0){
-									System.out.println("msgtweet length: " + msgtweet.length);
-									System.out.println(msgtweet[0]);
-									tweetlist.clear();
-									while(msgtweet.length > index){
+							System.out.println(resultRead.toString());
+							if (resultRead.toString().equals("REPLY")) {
+								Bundle extras=i.getExtras();
+								if (extras!=null) {
+									Messenger messenger=(Messenger)extras.get(EXTRA_MESSENGER);
+									Message msg = Message.obtain();
+									Bundle data = new Bundle();
+									data.putString("reply", resultRead);
+									msg.setData(data);
+									try {
+										Log.i(TAG, "Service onStartCommand: send data !");
+										messenger.send(msg);	
+									}
+									catch (android.os.RemoteException e1) {
+										Log.w(getClass().getName(), "Exception sending message", e1);
+									}
+								}
+							}
+							else{
+								Log.i(TAG, "Service onStartCommand " + "O que recebeu: " + resultRead);
+								resultSplit = resultRead.split("\\{");
+								System.out.println("r[1]: " + resultSplit[1]);
+								usertweet = resultSplit[1].split("\\}");
+								if(usertweet.length == 1){
+									System.out.println("u[0]: " + usertweet[0]);
+									msgtweet = usertweet[0].split(", ");
+									if(msgtweet.length != 0){
+										System.out.println("msgtweet length: " + msgtweet.length);
+										System.out.println(msgtweet[0]);
+										tweetlist.clear();
+										while(msgtweet.length > index){
+											t1 = msgtweet[index].split("=");
+											t2 = t1[1].split(" - ");
+											t = new Tweet(t2[0],t2[1]);
+											tweetlist.add(0,t);
+											index++;
+										}	
+									} else {
 										t1 = msgtweet[index].split("=");
 										t2 = t1[1].split(" - ");
 										t = new Tweet(t2[0],t2[1]);
 										tweetlist.add(0,t);
-										index++;
-									}	
-								} else {
-									t1 = msgtweet[index].split("=");
-									t2 = t1[1].split(" - ");
-									t = new Tweet(t2[0],t2[1]);
-									tweetlist.add(0,t);
+									}
+								}
+								Bundle extras=i.getExtras();
+								if (extras!=null) {
+									Messenger messenger=(Messenger)extras.get(EXTRA_MESSENGER);
+									Message msg = Message.obtain();
+									Bundle data = new Bundle();
+									data.putParcelableArrayList("listtweet", tweetlist);
+									msg.setData(data);
+									try {
+										Log.i(TAG, "Service onStartCommand: send data !");
+										messenger.send(msg);	
+									}
+									catch (android.os.RemoteException e1) {
+										Log.w(getClass().getName(), "Exception sending message", e1);
+									}
 								}
 							}
 						}
 						clientReceive.close();
+
+
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-
-
-					Bundle extras=i.getExtras();
-					if (extras!=null) {
-						Messenger messenger=(Messenger)extras.get(EXTRA_MESSENGER);
-						Message msg = Message.obtain();
-						Bundle data = new Bundle();
-						data.putParcelableArrayList("listtweet", tweetlist);
-						msg.setData(data);
-						try {
-							Log.i(TAG, "Service onStartCommand: send data !");
-							messenger.send(msg);	
-						}
-						catch (android.os.RemoteException e1) {
-							Log.w(getClass().getName(), "Exception sending message", e1);
-						}
-					}
-
-
-					/* 
-		        for (int i = 0; i < 3; i++)
-		        {
-		        	long endTime = System.currentTimeMillis() + 10*1000;
-
-		        	while (System.currentTimeMillis() < endTime) {
-		        		synchronized (this) {
-		        		 try {
-		        			wait(endTime - System.currentTimeMillis());
-		        		 } catch (Exception e) {
-		        		}
-		        	}
-		          }		
-		          Log.i(TAG, "Service running");
-		        }
-					 */
 				}
 			}
 		};   

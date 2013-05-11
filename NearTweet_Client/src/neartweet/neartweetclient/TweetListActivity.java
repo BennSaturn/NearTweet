@@ -58,35 +58,41 @@ public class TweetListActivity extends ListActivity {
 			@Override
 			public void handleMessage(Message msg) {
 				System.out.println("Recebeu lista!!");
-				List<Tweet> list = msg.getData().getParcelableArrayList("listtweet");
-				//System.out.println("list.size: "+list.size()+"tweetlist.isEmpty(): "+(!tweetList.isEmpty()));
-				if((!tweetList.isEmpty()) && (list.size()==1)) {
-					Tweet tweet = list.get(0);
-					if(!tweet.getUsername().equals("NearTweetStaff")) {
-						//System.out.println(tweet.getUsername()+"-"+tweet.getMessage());
-						tweetList.add(0, tweet);
-						int i=0;
-						while(tweetList.size()>i){
-							System.out.println(tweetList.get(i).username);
-							i++;
+				if (msg.getData().containsKey("reply"))
+				{
+					Toast.makeText(getBaseContext(), "Got Reply", Toast.LENGTH_SHORT).show();
+				}
+				else{
+					List<Tweet> list = msg.getData().getParcelableArrayList("listtweet");
+					//System.out.println("list.size: "+list.size()+"tweetlist.isEmpty(): "+(!tweetList.isEmpty()));
+					if((!tweetList.isEmpty()) && (list.size()==1)) {
+						Tweet tweet = list.get(0);
+						if(!tweet.getUsername().equals("NearTweetStaff")) {
+							//System.out.println(tweet.getUsername()+"-"+tweet.getMessage());
+							tweetList.add(0, tweet);
+							int i=0;
+							while(tweetList.size()>i){
+								System.out.println(tweetList.get(i).username);
+								i++;
+							}
+							array.notifyDataSetChanged();
+							ListView listView = (ListView) findViewById(android.R.id.list);
+							listView.setLongClickable(true);
+							listView.setOnItemLongClickListener(longMessageClickedHandler);
+							listView.setOnItemClickListener(quickMessageClickedHandler);
 						}
-						array.notifyDataSetChanged();
+					} else {
+						tweetList.clear();
+						while(!list.isEmpty()){
+							tweetList.add(list.remove(0));
+						}
+						array = new TweetAdapter(TweetListActivity.this, tweetList);
+						setListAdapter(array);
 						ListView listView = (ListView) findViewById(android.R.id.list);
 						listView.setLongClickable(true);
 						listView.setOnItemLongClickListener(longMessageClickedHandler);
 						listView.setOnItemClickListener(quickMessageClickedHandler);
 					}
-				} else {
-					tweetList.clear();
-					while(!list.isEmpty()){
-						tweetList.add(list.remove(0));
-					}
-					array = new TweetAdapter(TweetListActivity.this, tweetList);
-					setListAdapter(array);
-					ListView listView = (ListView) findViewById(android.R.id.list);
-					listView.setLongClickable(true);
-					listView.setOnItemLongClickListener(longMessageClickedHandler);
-					listView.setOnItemClickListener(quickMessageClickedHandler);
 				}
 			}
 		};
@@ -116,7 +122,7 @@ public class TweetListActivity extends ListActivity {
 	}
 
 	//TEM quer ser alterado para ver o Tweet em vez de uma nova view
-	  private OnItemClickListener quickMessageClickedHandler = new OnItemClickListener() {
+	private OnItemClickListener quickMessageClickedHandler = new OnItemClickListener() {
 		public void onItemClick(AdapterView parent, View v, int position, long id) {
 			stopService(intent);
 			Tweet reply = (Tweet) parent.getAdapter().getItem(position);		
@@ -211,7 +217,7 @@ public class TweetListActivity extends ListActivity {
 			nearTweetAlert("Servidor em baixo!");
 		}
 	}
-	
+
 	public void setSpamResult(String result){
 
 		System.out.println("SpamActivity: "+ result);

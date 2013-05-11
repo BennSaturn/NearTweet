@@ -191,12 +191,13 @@ public class Main {
 	}
 
 	public static void reply(){
+		System.out.println("Server: REPLY");
 		tweet = operation[1].split(" - ");
 		userReplyID = tweet[1].substring(1, tweet[1].length());
 		System.out.println(tweet[1]);
 		tweetTime = System.currentTimeMillis();
 		spamTweetList.put(tweet[3], 0);
-		userTweetList.put(tweetTime.toString(), tweet[0] + " - " + tweet[3]);
+		//userTweetList.put(tweetTime.toString(), tweet[0] + " - " + tweet[3]);
 		//tweetList.put(tweetCount, tweet[3] + " - " + personReply[1]);
 		int nConversation = 0;
 		Iterator it = tweetList.entrySet().iterator();
@@ -212,15 +213,10 @@ public class Main {
 			public void run() {
 				Socket socketSend;
 				OutputStreamWriter outputStream;
-				for (int port : listClients.values()){
-					System.out.println(port);
-					if (port != listClients.get(userReplyID)) {
 						try {
-							socketSend = new Socket("127.0.0.1", port);
+							socketSend = new Socket("127.0.0.1", listClients.get(userReplyID));
 							outputStream = new OutputStreamWriter(socketSend.getOutputStream());
-							oneTweetList.clear();
-							oneTweetList.put(tweetTime.toString(), tweet[0] + " - "+ "@" + userReplyID + " " + tweet[3]);
-							outputStream.write(oneTweetList.toString());
+							outputStream.write("REPLY");
 							outputStream.flush();
 							outputStream.close();
 							socketSend.close();
@@ -232,14 +228,11 @@ public class Main {
 							e.printStackTrace();
 						}
 					}
-				}
-			}
-
 		};
 		sendReply.start();
 			
 		try {
-			serverSocketSend = new Socket("127.0.0.1", listClients.get(userReplyID));
+			serverSocketSend = new Socket("127.0.0.1", listClients.get(tweet[0]));
 			outputStreamWriter = new OutputStreamWriter(serverSocketSend.getOutputStream());
 			outputStreamWriter.write("OK!");
 			outputStreamWriter.flush();
