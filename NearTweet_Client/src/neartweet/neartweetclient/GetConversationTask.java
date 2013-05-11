@@ -100,13 +100,29 @@ public class GetConversationTask extends AsyncTask<String, String, String>{
 		String[] resultSplit = tList.split("\\{");
 		System.out.println("r[1]: " + resultSplit[1]);
 		String[] usertweet = resultSplit[1].split("\\}");
-		System.out.println("u[1]: " + usertweet[1]);
-		
-		
-		
-		
+		System.out.println("u[1]: " + usertweet[0]);
+		String[] msgtweet = usertweet[0].split(", ");
+		String[] t1;
+		String[] t2;
+		Tweet t;
+		int index = 0;
+		if(msgtweet.length != 0){
+			System.out.println("msgtweet length: " + msgtweet.length);
+			tweetList.clear();
+			while(msgtweet.length > index){
+				t1 = msgtweet[index].split("=");
+				t2 = t1[1].split(" - ");
+				t = new Tweet(t2[0],t2[1]);
+				tweetList.add(0,t);
+				index++;
+			}	
+		} else {
+			t1 = msgtweet[index].split("=");
+			t2 = t1[1].split(" - ");
+			t = new Tweet(t2[0],t2[1]);
+			tweetList.add(0,t);
+		}	
 		context.setTweetList(tweetList);
-
 	}
 
 	@Override
