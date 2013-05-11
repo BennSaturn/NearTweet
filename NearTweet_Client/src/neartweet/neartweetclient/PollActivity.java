@@ -24,8 +24,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.PopupMenu;
-import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +36,9 @@ public class PollActivity extends Activity {
 	private String op1;
 	private String op2;
 	private String op3;
- 
+	private String res1;
+	private String res2;
+	private String res3;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -47,79 +47,116 @@ public class PollActivity extends Activity {
 		setContentView(R.layout.pollinit_activity);	
 		// Show the Up button in the action bar.
 		setupActionBar();
-		
+
 		/** vai buscar o extra que passas no intent **/
 		Bundle extras = getIntent().getExtras();
 		userName = extras.getString(USERNAME);
 		System.out.println("PollActivity: "+userName);
 	}
-	
-	
+
+
 	public void getQuestion(View v){
 		EditText texto =(EditText)findViewById(R.id.editText1);
 		pgt = texto.getText().toString();
 	}	
-	
+
 	public void getOption1(View v){
 		EditText texto =(EditText)findViewById(R.id.editText2);
 		op1 = texto.getText().toString();
 	}
-	
+
 	public void getOption2(View v){
 		EditText texto =(EditText)findViewById(R.id.editText3);
 		op2 = texto.getText().toString();
 	}
-	
+
 	public void getOption3(View v){
 		EditText texto =(EditText)findViewById(R.id.editText4);
 		op3 = texto.getText().toString();
 	}
-	
+
+	public void pollView(View v) {
+		//abrir a poll selecionada na lista de polls
+		//abrir a pollView_activity
+	}
+
 	public void finalizePoll(View v){
 		//vai xamar e preencher o pollres_activity
 		setContentView(R.layout.pollres_activity);
 		if(pgt == null){
 			//ERRROOO nao e possivel criar
+			Toast.makeText(getBaseContext(), "Não pode criar uma poll sem a pergunta", Toast.LENGTH_LONG);
 		}else{
-			
-		TextView tv = (TextView)findViewById(R.id.textView1);
-		tv.setText(pgt);
-		
-		if(op1 != null && op2!=null && op3!= null){
-			RadioButton rb1 = (RadioButton) findViewById(R.id.option1);
-			rb1.setText(op1);
-			
-			RadioButton rb2 = (RadioButton) findViewById(R.id.option2);
-			rb2.setText(op2);
 
-			RadioButton rb3 = (RadioButton) findViewById(R.id.option3);
-			rb3.setText(op3);
-		}else{
-			//ERRROOO need at least 3 options
-		}
-		
+			TextView tv = (TextView)findViewById(R.id.textView1);
+			tv.setText(pgt);
+
+			if(op1 != null && op2!=null && op3!= null){
+				RadioButton rb1 = (RadioButton) findViewById(R.id.option1);
+				rb1.setText(op1);
+
+				RadioButton rb2 = (RadioButton) findViewById(R.id.option2);
+				rb2.setText(op2);
+
+				RadioButton rb3 = (RadioButton) findViewById(R.id.option3);
+				rb3.setText(op3);
+			}else{
+				//ERRROOO need at least 3 options
+				Toast.makeText(getBaseContext(), "Precisa de pelo menos três opções!", Toast.LENGTH_LONG);
+			}
+
 		}
 	}
-	
+
+	public void viewContentPoll(View v){
+		//vai xamar e preencher o pollView_activity
+		//setContentView(R.layout.pollView_activiry);
+
+		if(pgt == null || op1 == null || res1 == null || op2 == null || res2 == null || op3 == null || res3 == null)
+			return;
+
+		TextView tv = (TextView)findViewById(R.id.textView1);
+		tv.setText(pgt);
+
+		RadioButton rb1 = (RadioButton) findViewById(R.id.option1);
+		rb1.setText(op1);
+
+		RadioButton rb2 = (RadioButton) findViewById(R.id.option2);
+		rb2.setText(op2);
+
+		RadioButton rb3 = (RadioButton) findViewById(R.id.option3);
+		rb3.setText(op3);
+
+		TextView tres1 = (TextView)findViewById(R.id.result1);
+		tres1.setText(res1);
+
+		TextView tres2 = (TextView)findViewById(R.id.result2);
+		tres2.setText(res2);
+
+		TextView tres3 = (TextView)findViewById(R.id.result3);
+		tres3.setText(res3);
+
+	}
+
 	public void onRadioButtonClicked(View view) {
-	    // Is the button now checked?
-	    boolean checked = ((RadioButton) view).isChecked();
-	    
-	    // Check which radio button was clicked
-	    switch(view.getId()) {
-	        case R.id.option1:
-	            if (checked)
-	                // somar 1 ao contador da primeira opcao
-	            break;
-	        case R.id.option2:
-	            if (checked)
-	            	// somar 1 ao contador da segunda opcao
-	            break;
-	        case R.id.option3:
-	            if (checked)
-	            	// somar 1 ao contador da terceira opcao
-	        break;
-	    }
+		// Is the button now checked?
+		boolean checked = ((RadioButton) view).isChecked();
+
+		// Check which radio button was clicked
+		switch(view.getId()) {
+		case R.id.option1:
+			if (checked)
+				// somar 1 ao contador da primeira opcao
+				break;
+		case R.id.option2:
+			if (checked)
+				// somar 1 ao contador da segunda opcao
+				break;
+		case R.id.option3:
+			if (checked)
+				// somar 1 ao contador da terceira opcao
+				break;
+		}
 	}
 
 	public void setResult(String result){
@@ -130,13 +167,13 @@ public class PollActivity extends Activity {
 			Intent intent = new Intent(this, TweetListActivity.class);
 			intent.putExtra(USERNAME, userName);
 			startActivity(intent);
-			
+
 		} else if(result.equals("ERRO!")){
-			
+
 		}
 	}
-	
-	
+
+
 
 
 	/**
