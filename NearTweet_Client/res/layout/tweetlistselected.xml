@@ -13,12 +13,13 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:gravity="center_vertical"
             android:paddingLeft="10dip"
             android:text="@string/tweetselected"
-            android:textSize="28sp" >
-        </TextView>
+            android:textSize="28sp" />
+
     </RelativeLayout>
 
     <!-- alterar para em vez da lista aparecer o comment da pessoa e as respostas recebidas -->
@@ -30,11 +31,5 @@
         android:layout_height="match_parent"
         tools:listitem="@android:layout/simple_list_item_2" >
     </ListView>
-
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnCount="1" >
-    </GridLayout>
 
 </LinearLayout>

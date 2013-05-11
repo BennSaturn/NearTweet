@@ -31,9 +31,11 @@ import android.widget.Toast;
 public class TweetActivity extends Activity {
 
 	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
+	public final static String REPLYUSER = "nearTweet.neartweetclient.REPLYUSER";
 	private static final int SELECT_PHOTO = 100;
 	private static final int PHOTO_TAKEN = 0;
 	private static String url = "";
+	private String replyUser = "";
 	private String userName;
 	private String gpsInfo = "";
 	private String photoInfo = "";
@@ -151,7 +153,11 @@ public class TweetActivity extends Activity {
 	/** OnClick Send Tweet button */
 	public void sendtweet(View v) {
 		EditText tweet = (EditText) findViewById(R.id.editText1);
-		new TweetTask(this).execute("TWEET:" + userName + " - " + tweet.getText().toString() + " " + gpsInfo + " " + photoInfo);		
+		if(replyUser == null){
+			new TweetTask(this).execute("TWEET:" + userName + " - " + tweet.getText().toString() + " " + gpsInfo + " " + photoInfo);	
+		} else {
+			new ReplyTask(this).execute("REPLY:" + userName + " - @" + replyUser + ":" + tweet.getText().toString() + " " + gpsInfo + " " + photoInfo);
+		}
 	}
 
 	public void setResult(String result){

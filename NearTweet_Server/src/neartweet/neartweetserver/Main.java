@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -32,12 +33,16 @@ public class Main {
 	private static String sharing;
 	private static String spam;
 	private static Map<String, Integer> listClients = new HashMap<String, Integer>();
+	private static Map<Integer, String> tweetList = new HashMap<Integer, String>();
+	private static Map<String, Integer> replyList = new HashMap<String, Integer>();
 	private static Map<String, Integer> spamTweetList = new HashMap<String, Integer>();
 	private static Map<String, String> userTweetList = new TreeMap<String, String>();
+	private static Map<String, String> oneTweetList = new TreeMap<String, String>();
 	private static int spamValue;
 	private static int banValue = 10;
 	private static Long tweetTime;
-	private static Map<String, String> oneTweetList = new TreeMap<String, String>();
+	private static int tweetCount = 0;
+	
 
 	public static void main(String[] args) {
 
@@ -79,9 +84,6 @@ public class Main {
 				break;
 			case "REPLY" :
 				reply();
-				break;
-			case "RETWEET" :
-				retweet();
 				break;
 			case "POLL" :
 				poll();
@@ -186,35 +188,36 @@ public class Main {
 	}
 
 	public static void reply(){
+		System.out.println(tweet);
 		tweet = operation[1].split(" - ");
 
 		String[] personReply = tweet[1].split(":");
-		spamTweetList.put(personReply[1], 0);;
-		userTweetList.put(personReply[1], personReply[0]);
-		if(listClients.get(personReply[0]) != null){
-			/*	String[] portReply = listClients.get(personReply[0]).split("/");
-			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portReply[2]));
-			sendMsg(sendTweet, personReply[1], endpoint);	*/
-		} else {
-			/*			for (String s :listClients.values()){
-				String[] portClient = s.split("/");
-				InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-				sendMsg(sendTweet, personReply[1], endpoint);
-			} */
+		String[] userReply = personReply[0].split("@");
+		spamTweetList.put(tweet[0], 0);
+		userTweetList.put(tweet[0], personReply[1]);
+		tweetList.put(tweetCount, tweet[0] + " - " + personReply[1]);
+		int nConversation = 0;
+		Iterator it = tweetList.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry)it.next();
+			if(pairs.getValue().equals(personReply[0]+ " - " +  personReply[1])){
+				nConversation = (int) pairs.getKey();
+			}	
 		}
-		System.out.println(tweet);
-	}
-
-	public static void retweet(){
-		tweet = operation[1].split(" - ");
-		System.out.println(tweet);
-		// ver todos os portos/clientes existentes
-
-		/*		for (String s :listClients.values()){
-			String[] portClient = s.split("/");
-			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(portClient[2]));
-			sendMsg(sendTweet, tweet, endpoint);
-		} */
+		replyList.put(personReply[2], nConversation);
+		try {
+			serverSocketSend = new Socket("127.0.0.1", listClients.get(tweet[0]));
+			outputStreamWriter = new OutputStreamWriter(serverSocketSend.getOutputStream());
+			outputStreamWriter.write("OK!");
+			outputStreamWriter.flush();
+			outputStreamWriter.close();
+			serverSocketSend.close();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		tweetCount++;
 	}
 
 	public static void poll(){

@@ -32,6 +32,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 public class TweetListActivity extends ListActivity {
 
 	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
+	public final static String REPLYUSER = "nearTweet.neartweetclient.REPLYUSER";
 	public final static String RETWEET = "nearTweet.neartweetclient.RETWEET";
 	private String userName;
 	static TweetAdapter array; 
@@ -137,13 +138,26 @@ public class TweetListActivity extends ListActivity {
 				@Override
 				public boolean onMenuItemClick(MenuItem item) {
 					if(item.getTitle().equals("Reply")){
-
+						stopService(intent);
+						Tweet reply = (Tweet) parent.getAdapter().getItem(position);		
+						String replyU = reply.getUsername();
+						String replyM = reply.getMessage();
 						Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
 						intent.putExtra(USERNAME, userName);
+						intent.putExtra(REPLYUSER,replyU + " : " + replyM);
 						//condicao para decidir se e pessoal ou publico
 						startActivity(intent);
 
-					} else if (item.getTitle().equals("ReTweet")){
+					} else if(item.getTitle().equals("ReplyAll")){
+						Tweet reply = (Tweet) parent.getAdapter().getItem(position);		
+						String replyU = reply.getUsername();
+						String replyM = reply.getMessage();
+						Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
+						intent.putExtra(USERNAME, userName);
+						intent.putExtra(REPLYUSER,replyU + ": " + replyM);
+						//condicao para decidir se e pessoal ou publico
+						startActivity(intent);
+					}else if (item.getTitle().equals("ReTweet")){
 						Intent intent = new Intent(TweetListActivity.this, FacebookRetweetActivity.class);
 						Tweet retweet = (Tweet) parent.getAdapter().getItem(position);		
 						String retweetU = retweet.getUsername();

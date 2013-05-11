@@ -2,6 +2,8 @@
   <group android:id="@+id/group_popupmenu">
       <item android:id="@+id/reply"
           android:title="Reply"/>
+      <item android:id="@+id/replyAll"
+          android:title="ReplyAll"/>
       <item android:id="@+id/retweet"
           android:title="ReTweet"/>
       <item android:id="@+id/spam"
