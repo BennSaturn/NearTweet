@@ -1,5 +1,7 @@
 package neartweet.neartweetclient;
 
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ListActivity;
@@ -10,13 +12,15 @@ import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 
 public class TweetSelectedActivity extends ListActivity{
 	
+	public final static String CONVERSATION = "nearTweet.neartweetclient.CONVERSATION";
 	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
+	private String tweet;
 	private String userName;
-	
-	//alterar para ver só qual o tweet completo e as respostas a este...
+	//alterar para ver qual o tweet completo e as respostas a este...
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,20 +31,11 @@ public class TweetSelectedActivity extends ListActivity{
 		/** vai buscar o extra que passas no intent **/
 		Bundle extras = getIntent().getExtras();
 		userName = extras.getString(USERNAME);
-		//System.out.println("TweetListActivity: "+userName);
+		tweet = extras.getString(CONVERSATION);
+		new GetConversationTask(this).execute("GETCONVERSATION:"+ userName +":"+ tweet); 
 
-		// start the ServerListenerService
-		//startService(new Intent(this, ServerListenerService.class));
 	}
-	
-	/*public void reply() {
-		Intent intent = new Intent(TweetSelectedActivity.this, TweetActivity.class);
-		intent.putExtra(USERNAME, userName);
-		//condição para decidir se é pessoal ou púbico
-		startActivity(intent);
-
-	}*/
-	
+		
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
 	 */
@@ -58,6 +53,12 @@ public class TweetSelectedActivity extends ListActivity{
 		return true;
 	}
 
+	public void setTweetList(List<Tweet> tweetList){
+		if(tweetList != null){
+			setListAdapter(new TweetAdapter(this, tweetList));
+		}
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

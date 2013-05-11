@@ -34,6 +34,7 @@ public class TweetListActivity extends ListActivity {
 	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
 	public final static String REPLYUSER = "nearTweet.neartweetclient.REPLYUSER";
 	public final static String RETWEET = "nearTweet.neartweetclient.RETWEET";
+	public final static String CONVERSATION = "nearTweet.neartweetclient.CONVERSATION";
 	private String userName;
 	static TweetAdapter array; 
 	static List<Tweet> tweetList = new ArrayList<Tweet>();
@@ -73,7 +74,7 @@ public class TweetListActivity extends ListActivity {
 						ListView listView = (ListView) findViewById(android.R.id.list);
 						listView.setLongClickable(true);
 						listView.setOnItemLongClickListener(longMessageClickedHandler);
-						//listView.setOnItemClickListener(quickMessageClickedHandler);
+						listView.setOnItemClickListener(quickMessageClickedHandler);
 					}
 				} else {
 					tweetList.clear();
@@ -85,7 +86,7 @@ public class TweetListActivity extends ListActivity {
 					ListView listView = (ListView) findViewById(android.R.id.list);
 					listView.setLongClickable(true);
 					listView.setOnItemLongClickListener(longMessageClickedHandler);
-					//listView.setOnItemClickListener(quickMessageClickedHandler);
+					listView.setOnItemClickListener(quickMessageClickedHandler);
 				}
 			}
 		};
@@ -115,13 +116,18 @@ public class TweetListActivity extends ListActivity {
 	}
 
 	//TEM quer ser alterado para ver o Tweet em vez de uma nova view
-	 /* private OnItemClickListener quickMessageClickedHandler = new OnItemClickListener() {
+	  private OnItemClickListener quickMessageClickedHandler = new OnItemClickListener() {
 		public void onItemClick(AdapterView parent, View v, int position, long id) {
+			stopService(intent);
+			Tweet reply = (Tweet) parent.getAdapter().getItem(position);		
+			String ConversationU = reply.getUsername();
+			String ConversationM = reply.getMessage();
 			Intent intent = new Intent(TweetListActivity.this, TweetSelectedActivity.class);
 			intent.putExtra(USERNAME, userName);
+			intent.putExtra(CONVERSATION,ConversationU + " - " + ConversationM);
 			startActivity(intent);
 		}
-	};*/
+	};
 
 	private OnItemLongClickListener longMessageClickedHandler = new OnItemLongClickListener() {
 		public boolean onItemLongClick(final AdapterView<?> parent, View v,

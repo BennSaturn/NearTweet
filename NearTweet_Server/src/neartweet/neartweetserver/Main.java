@@ -94,6 +94,8 @@ public class Main {
 			case "GETLIST" :
 				getlist(operation[1]);		
 				break;	
+			case "GETCONVERSATION" :
+				getConversation(operation[1],operation[2]);
 			}    
 
 			try {
@@ -318,10 +320,49 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-
 	}
-
+	
+	public static void getConversation(String username, String conversation)
+	{
+		int nConversation = 0;
+		int nTweet = 0;
+		Map<Integer, String> conversationList = new TreeMap<Integer, String>();
+		String[] conv = conversation.split(" - ");
+		Iterator it1 = tweetList.entrySet().iterator();
+		while (it1.hasNext()) {
+			Map.Entry pairs = (Map.Entry)it1.next();
+			if(pairs.getValue().equals(conv[0] + " - " +  conv[1])){
+				nConversation = (int) pairs.getKey();
+				conversationList.put(nTweet, (String) pairs.getValue());
+				nTweet++;
+			}	
+		}
+				
+		Iterator it2 = replyList.entrySet().iterator();
+		while (it2.hasNext()) {
+			Map.Entry pairs = (Map.Entry)it2.next();
+			if(pairs.getValue().equals(nConversation)){
+				conversationList.put(nTweet++, (String) pairs.getKey());
+			}	
+		}
+		
+		int port = listClients.get(username);
+		try {
+			System.out.println("GETLIST: "+port);
+			serverSocketSend = new Socket("127.0.0.1", port);
+			System.out.println("Criou Socket!!");
+			outputStreamWriter = new OutputStreamWriter(serverSocketSend.getOutputStream());
+			outputStreamWriter.write(conversationList.toString());
+			outputStreamWriter.flush();
+			outputStreamWriter.close();
+			serverSocketSend.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public static void sendMsg(Socket soc, String msg, InetSocketAddress endpoint){
 		try {
 			sendTweet.connect(endpoint);
