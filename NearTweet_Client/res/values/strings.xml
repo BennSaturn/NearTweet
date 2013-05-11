@@ -77,5 +77,6 @@
     <string name="app_id">160929487409513</string>
     <string name="instructions">Login to your FB account</string>
     <string name="exception">Exception: %1$s</string>
+    <string name="pollList">Lista de Polls</string>
 
 </resources>
