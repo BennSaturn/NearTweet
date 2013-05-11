@@ -72,7 +72,7 @@ public class TweetListActivity extends ListActivity {
 						ListView listView = (ListView) findViewById(android.R.id.list);
 						listView.setLongClickable(true);
 						listView.setOnItemLongClickListener(longMessageClickedHandler);
-						listView.setOnItemClickListener(quickMessageClickedHandler);
+						//listView.setOnItemClickListener(quickMessageClickedHandler);
 					}
 				} else {
 					tweetList.clear();
@@ -84,7 +84,7 @@ public class TweetListActivity extends ListActivity {
 					ListView listView = (ListView) findViewById(android.R.id.list);
 					listView.setLongClickable(true);
 					listView.setOnItemLongClickListener(longMessageClickedHandler);
-					listView.setOnItemClickListener(quickMessageClickedHandler);
+					//listView.setOnItemClickListener(quickMessageClickedHandler);
 				}
 			}
 		};
@@ -113,13 +113,14 @@ public class TweetListActivity extends ListActivity {
 		new GetTweetsTask(this).execute("GETLIST:"+userName); 
 	}
 
-	private OnItemClickListener quickMessageClickedHandler = new OnItemClickListener() {
+	//TEM quer ser alterado para ver o Tweet em vez de uma nova view
+	 /* private OnItemClickListener quickMessageClickedHandler = new OnItemClickListener() {
 		public void onItemClick(AdapterView parent, View v, int position, long id) {
 			Intent intent = new Intent(TweetListActivity.this, TweetSelectedActivity.class);
 			intent.putExtra(USERNAME, userName);
 			startActivity(intent);
 		}
-	};
+	};*/
 
 	private OnItemLongClickListener longMessageClickedHandler = new OnItemLongClickListener() {
 		public boolean onItemLongClick(final AdapterView<?> parent, View v,
@@ -180,7 +181,7 @@ public class TweetListActivity extends ListActivity {
 			ListView listView = (ListView) findViewById(android.R.id.list);
 			listView.setLongClickable(true);
 			listView.setOnItemLongClickListener(longMessageClickedHandler);
-			listView.setOnItemClickListener(quickMessageClickedHandler);
+			//listView.setOnItemClickListener(quickMessageClickedHandler);
 
 
 

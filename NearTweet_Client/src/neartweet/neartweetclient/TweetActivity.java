@@ -265,12 +265,14 @@ public class TweetActivity extends Activity {
 		@Override  
 		public void onProviderDisabled(String provider)  
 		{  
-			//print "Currently GPS is Disabled";  
+			//print "Currently GPS is Disabled";
+			//Toast.makeText(getBaseContext(), "GPS Disabled", Toast.LENGTH_SHORT).show();  
 		}  
 		@Override  
 		public void onProviderEnabled(String provider)  
-		{  
-			//print "GPS got Enabled";  
+		{   
+			//print "GPS got Enabled";   
+			//Toast.makeText(getBaseContext(), "GPS Enabled", Toast.LENGTH_SHORT).show();
 		}  
 		@Override  
 		public void onStatusChanged(String provider, int status, Bundle extras)  

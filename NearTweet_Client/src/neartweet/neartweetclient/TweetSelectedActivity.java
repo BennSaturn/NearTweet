@@ -33,24 +33,13 @@ public class TweetSelectedActivity extends ListActivity{
 		//startService(new Intent(this, ServerListenerService.class));
 	}
 	
-	public void reply(View v) {
+	/*public void reply() {
 		Intent intent = new Intent(TweetSelectedActivity.this, TweetActivity.class);
 		intent.putExtra(USERNAME, userName);
 		//condição para decidir se é pessoal ou púbico
 		startActivity(intent);
 
-	}
-
-	public void retweet(View v) {
-		//PopUP menu para copiar o tweet para outra aplicação
-
-	}
-	
-	public void spam(View v) {
-		//Interação com o user para confirmar de que é para bloquear o utilizador seleccionado
-
-	}
-	
+	}*/
 	
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
