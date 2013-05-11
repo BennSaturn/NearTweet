@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class FacebookRetweetActivity extends FragmentActivity {
 	public final static String RETWEET = "nearTweet.neartweetclient.RETWEET";
 	public final static String USERNAME = "nearTweet.neartweetclient.USERNAME";
 	private static final List<String> PERMISSIONS = new ArrayList<String>(); 
+	private String userName;
 	private SharedPreferences mPrefs;
 	private Facebook facebook;
 	private AsyncFacebookRunner mAsyncRunner;
@@ -53,6 +55,8 @@ public class FacebookRetweetActivity extends FragmentActivity {
 		this.facebookConnector = new FacebookConnector(APP_ID, this, getApplicationContext(), new String[] {"publish_stream", "publish_actions"});
 		String facebookMessage = getIntent().getStringExtra(RETWEET);
 		String[] userMessage = facebookMessage.split("/");
+		Bundle extras = getIntent().getExtras();
+		userName = extras.getString(USERNAME);
 		user = userMessage[0];
 		
 		if (userMessage[1] == null){
@@ -108,6 +112,17 @@ public class FacebookRetweetActivity extends FragmentActivity {
 		};
 		t.start();
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		if((keyCode == KeyEvent.KEYCODE_BACK)){
+			Intent intent = new Intent(this, TweetListActivity.class);
+			intent.putExtra(USERNAME, userName);
+			startActivity(intent);
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 
 	private void showToast(String message){
 		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();

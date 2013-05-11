@@ -58,6 +58,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="neartweet.neartweetclient.TweetListActivity" />
         </activity>
+         <activity
+            android:name="neartweet.neartweetclient.PollActivity"
+            android:label="@string/poll"
+            android:parentActivityName="neartweet.neartweetclient.TweetListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="neartweet.neartweetclient.TweetListActivity" />
+        </activity>
          <activity 
          android:name="neartweet.neartweetclient.FacebookRetweetActivity" 
          android:label="@string/app_name"

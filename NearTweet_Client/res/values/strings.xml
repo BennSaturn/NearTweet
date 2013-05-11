@@ -26,6 +26,12 @@
     <string name="logout" >Logout
     </string>
 
+    <string name="viewpoll" >View Poll(s)
+    </string>
+    
+    <string name="createpoll" >Create Poll
+    </string>
+    
     <string name="poll" >Poll
     </string>
 

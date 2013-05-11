@@ -257,6 +257,7 @@ public class TweetListActivity extends ListActivity {
 		return true;
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -270,6 +271,18 @@ public class TweetListActivity extends ListActivity {
 			//
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
+		case R.id.createpoll:
+			Intent intentCP = new Intent(this, PollActivity.class);
+			startActivity(intentCP);
+			return true;
+		case R.id.viewpoll:
+			Intent intentVP = new Intent(this, PollActivity.class);
+			startActivity(intentVP);
+			return true;
+		case R.id.logout:
+            System.exit(0);
+		case 0:
+			NavUtils.navigateUpTo(getParent(), getParentActivityIntent());
 		}
 		return super.onOptionsItemSelected(item);
 	}

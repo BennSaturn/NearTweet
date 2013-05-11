@@ -1,14 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
-        android:id="@+id/poll"
+    <item android:id="@+id/createpoll" android:title="@string/createpoll"></item><item
+        android:id="@+id/viewpoll"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/poll"/>
+        android:title="@string/viewpoll"/>
     <item android:id="@+id/logout"
          android:orderInCategory="100" 
          android:title="@string/logout">
         
     </item>
+    
 
 </menu>

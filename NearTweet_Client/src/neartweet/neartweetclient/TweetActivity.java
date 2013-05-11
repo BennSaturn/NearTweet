@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Build;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -139,7 +140,7 @@ public class TweetActivity extends Activity {
 			if(MyLocationListener.latitude>0){  
 				Toast.makeText(getBaseContext(), "Latitude: " + MyLocationListener.latitude + '\n' + 
 						"Longitude: " + MyLocationListener.longitude + '\n', Toast.LENGTH_SHORT).show();
-				gpsInfo = "Latitude: " + MyLocationListener.latitude + " Longitude: " + MyLocationListener.longitude;
+				gpsInfo = MyLocationListener.latitude + "N ; " + MyLocationListener.longitude + "W";
 			} else {  
 				alert.setTitle("Wait");  
 				alert.setMessage("GPS in progress, please wait.");    
@@ -240,6 +241,17 @@ public class TweetActivity extends Activity {
 		return true;
 	}
 
+	@SuppressLint("NewApi")
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		if((keyCode == KeyEvent.KEYCODE_BACK)){
+			Intent intent = new Intent(this, TweetListActivity.class);
+			intent.putExtra(USERNAME, userName);
+			startActivity(intent);
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

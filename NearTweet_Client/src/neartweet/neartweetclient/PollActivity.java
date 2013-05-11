@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;  
 import android.os.Build;
 import android.support.v4.app.NavUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,8 +54,17 @@ public class PollActivity extends Activity {
 		userName = extras.getString(USERNAME);
 		System.out.println("PollActivity: "+userName);
 	}
-
-
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		if((keyCode == KeyEvent.KEYCODE_BACK)){
+			Intent intent = new Intent(this, TweetListActivity.class);
+			intent.putExtra(USERNAME, userName);
+			startActivity(intent);
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	public void getQuestion(View v){
 		EditText texto =(EditText)findViewById(R.id.editText1);
 		pgt = texto.getText().toString();
@@ -85,7 +95,7 @@ public class PollActivity extends Activity {
 		setContentView(R.layout.pollres_activity);
 		if(pgt == null){
 			//ERRROOO nao e possivel criar
-			Toast.makeText(getBaseContext(), "Não pode criar uma poll sem a pergunta", Toast.LENGTH_LONG);
+			Toast.makeText(getBaseContext(), "Nao pode criar uma poll sem a pergunta", Toast.LENGTH_LONG);
 		}else{
 
 			TextView tv = (TextView)findViewById(R.id.textView1);
@@ -102,7 +112,7 @@ public class PollActivity extends Activity {
 				rb3.setText(op3);
 			}else{
 				//ERRROOO need at least 3 options
-				Toast.makeText(getBaseContext(), "Precisa de pelo menos três opções!", Toast.LENGTH_LONG);
+				Toast.makeText(getBaseContext(), "Precisa de pelo menos tres opcoes!", Toast.LENGTH_LONG);
 			}
 
 		}
@@ -205,6 +215,18 @@ public class PollActivity extends Activity {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		case R.id.createpoll:
+			Intent intentCP = new Intent(this, PollActivity.class);
+			startActivity(intentCP);
+			return true;
+		case R.id.viewpoll:
+			Intent intentVP = new Intent(this, PollActivity.class);
+			startActivity(intentVP);
+			return true;
+		case R.id.logout:
+			Intent intentLO = new Intent(this, MainActivity.class);
+			startActivity(intentLO);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +58,16 @@ public class TweetSelectedActivity extends ListActivity{
 		if(tweetList != null){
 			setListAdapter(new TweetAdapter(this, tweetList));
 		}
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		if((keyCode == KeyEvent.KEYCODE_BACK)){
+			Intent intent = new Intent(this, TweetListActivity.class);
+			intent.putExtra(USERNAME, userName);
+			startActivity(intent);
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	@Override
