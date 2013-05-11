@@ -120,7 +120,7 @@ public class PollActivity extends Activity {
 
 	public void viewContentPoll(View v){
 		//vai xamar e preencher o pollView_activity
-		//setContentView(R.layout.pollView_activiry);
+		setContentView(R.layout.pollview_activity);
 
 		if(pgt == null || op1 == null || res1 == null || op2 == null || res2 == null || op3 == null || res3 == null)
 			return;
@@ -157,14 +157,17 @@ public class PollActivity extends Activity {
 		case R.id.option1:
 			if (checked)
 				// somar 1 ao contador da primeira opcao
+				viewContentPoll(view);
 				break;
 		case R.id.option2:
 			if (checked)
 				// somar 1 ao contador da segunda opcao
+				viewContentPoll(view);
 				break;
 		case R.id.option3:
 			if (checked)
 				// somar 1 ao contador da terceira opcao
+				viewContentPoll(view);
 				break;
 		}
 	}

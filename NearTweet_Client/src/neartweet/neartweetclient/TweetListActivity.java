@@ -273,10 +273,12 @@ public class TweetListActivity extends ListActivity {
 			return true;
 		case R.id.createpoll:
 			Intent intentCP = new Intent(this, PollActivity.class);
+			intentCP.putExtra(USERNAME,userName);
 			startActivity(intentCP);
 			return true;
 		case R.id.viewpoll:
 			Intent intentVP = new Intent(this, PollActivity.class);
+			intentVP.putExtra(USERNAME,userName);
 			startActivity(intentVP);
 			return true;
 		case R.id.logout:
