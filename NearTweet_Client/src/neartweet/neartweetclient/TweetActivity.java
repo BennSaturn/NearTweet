@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;  
 import android.os.Build;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +52,7 @@ public class TweetActivity extends Activity {
 		/** vai buscar o extra que passas no intent **/
 		Bundle extras = getIntent().getExtras();
 		userName = extras.getString(USERNAME);
+		replyUser = extras.getString(REPLYUSER);
 		System.out.println("TweetActivity: "+userName);
 	}
 
@@ -156,7 +158,8 @@ public class TweetActivity extends Activity {
 		if(replyUser == null){
 			new TweetTask(this).execute("TWEET:" + userName + " - " + tweet.getText().toString() + " " + gpsInfo + " " + photoInfo);	
 		} else {
-			new ReplyTask(this).execute("REPLY:" + userName + " - @" + replyUser + ":" + tweet.getText().toString() + " " + gpsInfo + " " + photoInfo);
+			Log.d(ACTIVITY_SERVICE,tweet.getText().toString());
+			new ReplyTask(this).execute("REPLY:" + userName + " - @" + replyUser + " - " + tweet.getText().toString() + " " + gpsInfo + " " + photoInfo);
 		}
 	}
 

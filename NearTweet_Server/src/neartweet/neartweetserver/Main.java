@@ -76,7 +76,6 @@ public class Main {
 			}		
 			switch(operation[0]){ 
 			case "LOGIN" :
-				System.out.println("woohoo?!");
 				login(operation[1], Integer.parseInt(operation[2]));
 				break;
 			case "TWEET" :
@@ -140,6 +139,7 @@ public class Main {
 		tweetTime = System.currentTimeMillis();
 		spamTweetList.put(tweet[0] + " - " + tweet[1], 0);
 		userTweetList.put(tweetTime.toString(), tweet[0] + " - " + tweet[1]);
+		tweetList.put(tweetCount, tweet[0] + " - " + tweet[1]);
 		System.out.println(tweet[0]+"-"+tweet[1]);
 
 		Thread sendTweet = new Thread() {
@@ -188,25 +188,25 @@ public class Main {
 	}
 
 	public static void reply(){
-		System.out.println(tweet);
+		System.out.println(operation[1]);
 		tweet = operation[1].split(" - ");
-
+		System.out.println("Reply: " + tweet[0] + tweet[1] + tweet[2] + tweet[3]);
 		String[] personReply = tweet[1].split(":");
-		String[] userReply = personReply[0].split("@");
-		spamTweetList.put(tweet[0], 0);
-		userTweetList.put(tweet[0], personReply[1]);
-		tweetList.put(tweetCount, tweet[0] + " - " + personReply[1]);
+		tweetTime = System.currentTimeMillis();
+		spamTweetList.put(tweet[3], 0);
+		userTweetList.put(tweetTime.toString(), tweet[0] + " - " + tweet[3]);
+		//tweetList.put(tweetCount, tweet[3] + " - " + personReply[1]);
 		int nConversation = 0;
 		Iterator it = tweetList.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry)it.next();
-			if(pairs.getValue().equals(personReply[0]+ " - " +  personReply[1])){
+			if(pairs.getValue().equals(tweet[1]+ " - " +  tweet[2])){
 				nConversation = (int) pairs.getKey();
 			}	
 		}
-		replyList.put(personReply[2], nConversation);
+		replyList.put(tweet[0] + " - " + tweet[3], nConversation);
 		try {
-			serverSocketSend = new Socket("127.0.0.1", listClients.get(tweet[0]));
+			serverSocketSend = new Socket("127.0.0.1", listClients.get(tweet[1]));
 			outputStreamWriter = new OutputStreamWriter(serverSocketSend.getOutputStream());
 			outputStreamWriter.write("OK!");
 			outputStreamWriter.flush();

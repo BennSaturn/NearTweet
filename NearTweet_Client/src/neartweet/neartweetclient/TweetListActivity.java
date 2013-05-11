@@ -144,7 +144,7 @@ public class TweetListActivity extends ListActivity {
 						String replyM = reply.getMessage();
 						Intent intent = new Intent(TweetListActivity.this, TweetActivity.class);
 						intent.putExtra(USERNAME, userName);
-						intent.putExtra(REPLYUSER,replyU + " : " + replyM);
+						intent.putExtra(REPLYUSER,replyU + " - " + replyM);
 						//condicao para decidir se e pessoal ou publico
 						startActivity(intent);
 
