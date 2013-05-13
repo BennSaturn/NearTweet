@@ -16,6 +16,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -161,6 +162,7 @@ public class TweetListActivity extends ListActivity {
 						startActivity(intent);
 
 					} else if(item.getTitle().equals("ReplyAll")){
+						stopService(intent);
 						Tweet reply = (Tweet) parent.getAdapter().getItem(position);		
 						String replyU = reply.getUsername();
 						String replyM = reply.getMessage();
@@ -179,11 +181,11 @@ public class TweetListActivity extends ListActivity {
 						//falta agarrar ao facebook para mandar o tweet
 
 					} else if (item.getTitle().equals("SPAM")){
+						stopService(intent);
 						Tweet spamT = (Tweet) parent.getAdapter().getItem(position);		
 						String spamU = spamT.getUsername();
-						Log.d(ACTIVITY_SERVICE,spamT.getUsername() + spamT.getMessage());
-						stopService(intent);
-						new SpamTask(TweetListActivity.this).execute("SPAM "+ spamU);
+						Log.d(ACTIVITY_SERVICE,spamT.getUsername() + spamT.getMessage());			
+						new SpamTask(TweetListActivity.this).execute("SPAM:"+ spamT.getMessage() + " - " + spamT.getUsername());
 						//	marcar o tweet como spam para o servidor...
 
 					}
@@ -232,6 +234,16 @@ public class TweetListActivity extends ListActivity {
 		}
 	}
 
+	@SuppressLint("NewApi")
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		if((keyCode == KeyEvent.KEYCODE_BACK)){
+			Intent intent = new Intent(this, MainActivity.class);
+			startActivity(intent);
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	private void nearTweetAlert(String msg){
 		new AlertDialog.Builder(this).setTitle("NearTweet Alert!").setMessage(msg)
 		.setNeutralButton("Ok", new DialogInterface.OnClickListener() {

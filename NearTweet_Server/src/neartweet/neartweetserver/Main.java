@@ -32,6 +32,8 @@ public class Main {
 	private static String poll;
 	private static String sharing;
 	private static String spam;
+	private static String spamU[];
+	private static String spamT;
 	private static String userReplyID;
 	private static Map<String, Integer> listClients = new HashMap<String, Integer>();
 	private static Map<Integer, String> tweetList = new HashMap<Integer, String>();
@@ -40,7 +42,7 @@ public class Main {
 	private static Map<String, String> userTweetList = new TreeMap<String, String>();
 	private static Map<String, String> oneTweetList = new TreeMap<String, String>();
 	private static int spamValue;
-	private static int banValue = 10;
+	private static int banValue = 2;
 	private static Long tweetTime;
 	private static int tweetCount = 0;
 	
@@ -261,15 +263,15 @@ public class Main {
 		} */
 	}
 
-	public static void spam(String username){
-		spam = (String) message.subSequence(4, message.length());
+	public static void spam(String operation){
+		spam = operation;
 		System.out.println(spam);
 		spamValue = spamTweetList.get(spam);
 		spamTweetList.remove(spam);
 		spamValue += 1;
-
+		spamU = spam.split(" - ");
 		if(spamValue == banValue){
-			userTweetList.remove(spam);
+			userTweetList.remove(spamU);
 			/* String bannedUser[] = listClients.get(userName).split("/");
 			// informacao para o utilizador a banir
 			InetSocketAddress endpoint = new InetSocketAddress(Integer.parseInt(bannedUser[2]));
@@ -278,7 +280,7 @@ public class Main {
 			return;
 		}
 		spamTweetList.put(spam, spamValue);
-		int port = listClients.get(username);
+		int port = listClients.get(spamU);
 		try {
 			serverSocketSend = new Socket("127.0.0.1", port);
 			outputStreamWriter = new OutputStreamWriter(serverSocketSend.getOutputStream());

@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;  
 import android.os.Build;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +41,7 @@ public class PollActivity extends Activity {
 	private String res1;
 	private String res2;
 	private String res3;
+	private int r1 = 0, r2 = 0, r3 = 0; 
 
 	@SuppressLint("NewApi")
 	@Override
@@ -87,7 +89,7 @@ public class PollActivity extends Activity {
 
 	public void pollView(View v) {
 		//abrir a poll selecionada na lista de polls
-		//abrir a pollView_activity
+		//setContentView(R.layout.pollview_activity);
 	}
 
 	public void finalizePoll(View v){
@@ -120,11 +122,14 @@ public class PollActivity extends Activity {
 
 	public void viewContentPoll(View v){
 		//vai xamar e preencher o pollView_activity
+		
+		/* if(pgt == null || op1 == null || res1 == null || op2 == null || res2 == null || op3 == null || res3 == null)
+			return; */
+		
 		setContentView(R.layout.pollview_activity);
-
-		if(pgt == null || op1 == null || res1 == null || op2 == null || res2 == null || op3 == null || res3 == null)
-			return;
-
+		
+		Log.d("pgt", pgt);
+		
 		TextView tv = (TextView)findViewById(R.id.textView1);
 		tv.setText(pgt);
 
@@ -137,36 +142,41 @@ public class PollActivity extends Activity {
 		RadioButton rb3 = (RadioButton) findViewById(R.id.option3);
 		rb3.setText(op3);
 
-		TextView tres1 = (TextView)findViewById(R.id.result1);
-		tres1.setText(res1);
-
+		TextView tres1 = (TextView)findViewById(R.id.result1);	
+		tres1.setText(String.valueOf(r1));
+		
 		TextView tres2 = (TextView)findViewById(R.id.result2);
-		tres2.setText(res2);
-
+		tres2.setText(String.valueOf(r2));
+		
 		TextView tres3 = (TextView)findViewById(R.id.result3);
-		tres3.setText(res3);
+		tres3.setText(String.valueOf(r3));
+		
+		
 
 	}
 
 	public void onRadioButtonClicked(View view) {
 		// Is the button now checked?
 		boolean checked = ((RadioButton) view).isChecked();
-
+		
 		// Check which radio button was clicked
 		switch(view.getId()) {
 		case R.id.option1:
 			if (checked)
-				// somar 1 ao contador da primeira opcao
+				// somar 1 ao contador da primeira opcao				
+				r1 += 1;
 				viewContentPoll(view);
 				break;
 		case R.id.option2:
 			if (checked)
 				// somar 1 ao contador da segunda opcao
+				r2 += 1;
 				viewContentPoll(view);
 				break;
 		case R.id.option3:
 			if (checked)
 				// somar 1 ao contador da terceira opcao
+				r3 += 1;
 				viewContentPoll(view);
 				break;
 		}

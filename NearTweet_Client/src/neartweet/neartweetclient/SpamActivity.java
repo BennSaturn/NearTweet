@@ -24,23 +24,22 @@ public class SpamActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.id.spam);	
+		//setContentView(R.layout.spam_dialog);	
 		// Show the Up button in the action bar.
-		setupActionBar();
+		//setupActionBar();
 
 		/** vai buscar o extra que passas no intent **/
 		Bundle extras = getIntent().getExtras();
 		userName = extras.getString(USERNAME);
 		System.out.println("SpamActivity: "+userName);
 	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) { 
-		super.onActivityResult(requestCode, resultCode, imageReturnedIntent); 
-
-		//n sei o que fazer...
+	
+	public void doNotShare(View button){
+		finish();
 	}
-
+	public void share(View button){
+		spamTweet();
+	}
 	
 	public void spamButtonAction(View v) {
 		
@@ -48,22 +47,21 @@ public class SpamActivity extends Activity{
 	}
 	
 	/** OnClick Spam button */
-	public void spamTweet(View v) {
-		EditText tweet = (EditText) findViewById(R.id.editText1);
-		//new SpamTask(this).execute("SPAM:" + userName + " - " + tweet.getText().toString());		
+	public void spamTweet() {
+		//new SpamTask(this).execute("SPAM:" + userName);		
 	}
 
-	public void setResult(String result){
+	public void setSpamResult(String result){
 
 		System.out.println("SpamActivity: "+ result);
 
 		if(result.equals("OK!")){
-			Intent intent = new Intent(this, SpamActivity.class);
-			intent.putExtra(USERNAME, userName);
-			startActivity(intent);
+			Toast.makeText(getBaseContext(), "Tweet Notified as Spam", Toast.LENGTH_SHORT).show();
+			finish();
 			//NavUtils.navigateUpFromSameTask(this);
 		} else if(result.equals("ERRO!")){
-			nearTweetAlert("Spam nao registado;");
+			nearTweetAlert("Spam nao registado");
+			finish();
 		}
 	}
 	

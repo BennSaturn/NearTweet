@@ -28,13 +28,15 @@
     android:layout_height="wrap_content"
     android:columnCount="4"
     android:orientation="vertical" > 
+
         <RadioButton
             android:id="@+id/option1"
             android:layout_width="fill_parent"
-    		android:layout_height="wrap_content"
-    		android:text=""
-    		android:visibility="visible"
-    		android:onClick="onRadioButtonClicked"/>
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text=""
+            android:visibility="visible" />
+
         <RadioButton
             android:id="@+id/option2"
             android:layout_width="fill_parent"
